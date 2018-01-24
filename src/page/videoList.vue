@@ -1,0 +1,198 @@
+<template>
+  <el-container >
+    <el-container style="text-align:center;">
+      <el-table :data="tableData" header-align="center" border max-height=""  size="medium " style="width:60%;margin:20px auto">
+        <el-table-column  header-align="center" type="selection"></el-table-column>
+        <el-table-column  header-align="center" prop="id" label="ID" width="70">
+        </el-table-column>
+        <el-table-column header-align="center" prop="title" label="类型" width="120">
+        </el-table-column>
+        <el-table-column  header-align="center" prop="description" label="描述" width="100">
+        </el-table-column>
+        <el-table-column  header-align="center" prop="linkUrl" label="视频链接" width="150">
+        </el-table-column>
+        <el-table-column header-align="center" prop="addTime" label="添加时间" width="150">
+        </el-table-column>
+        <el-table-column header-align="center" prop="clickNum" label="点击量" width="100">
+        </el-table-column>
+        <el-table-column header-align="center" label="操作">
+          <template scope="scope">
+            <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="small" type="danger" @click="handleDelete(scope.row,scope.$index)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <el-footer>
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="pageSizes"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total='totalCount'>
+        </el-pagination>
+      </el-footer>
+    </el-container>
+
+    <!--编辑-->
+    <el-dialog :model="selectTable" :visible.sync="dialogFormVisible"  :before-close="handleClose">
+      <el-form>
+        <el-form-item label="视频分类" :label-width="formLabelWidth">
+          <el-select v-model="selectTable.classId" placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="视频描述" :label-width="formLabelWidth">
+          <el-input v-model="selectTable.description"  style="width:300px;"></el-input>
+        </el-form-item>
+        <el-form-item label="视频链接" :label-width="formLabelWidth">
+          <el-input v-model="selectTable.linkUrl"  style="width:300px;"></el-input>
+        </el-form-item>
+        <el-form-item label="分享代码" :label-width="formLabelWidth">
+          <el-input v-model="selectTable.shareCode"  style="width:300px;"></el-input>
+        </el-form-item>
+        <el-form-item label="点击量" :label-width="formLabelWidth">
+          <el-input v-model="selectTable.clickNum"  style="width:300px;"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="handleCancel">取 消</el-button>
+        <el-button type="primary" @click="handleUpdate(selectTable)">确 定</el-button>
+      </div>
+    </el-dialog>
+  </el-container>
+</template>
+
+<script>
+  import {video_list,del_video,update_video} from '../api/url'
+  let params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}
+  export default {
+    data() {
+      return {
+        tableData:[],
+        selectTable:[],
+        pageSize:5,
+        pageSizes:[5,10,15,20],
+        totalCount:0,
+        currentPage:1,
+        productId:'',
+        dialogTableVisible: false,
+        dialogFormVisible: false,
+        formLabelWidth: '100px',
+        options: [{
+          value: 1,
+          label: '娱乐'
+        }, {
+          value: 2,
+          label: '体育'
+        }, {
+          value: 3,
+          label: '影视'
+        }],
+      }
+    },
+    created(){
+      this.getProductList(params,'post')
+    },
+    methods:{
+      getProductList(params=null,method){
+        this.$http({
+            url:video_list,
+            method:method ,
+            params:{
+              ...params
+            }
+          }
+        ).then(data=>{
+          this.tableData=data.data.resultList
+          this.totalCount=data.data.totalCount
+        })
+      },
+      //close dialog
+      handleClose(done) {
+        this.$confirm('放弃修改？')
+          .then(()=> {
+            done()
+          })
+          .catch(_ => {});
+      },
+      //修改产品
+      handleUpdate(data){
+        this.dialogFormVisible = false
+        this.$http({
+          method:'post',
+          url:update_video,
+          params:{
+            ...data
+          }
+        }).then(data=>{
+          console.log(data)
+        })
+      },
+      //编辑button
+      handleEdit(data,index) {
+        this.selectTable = data
+        this.dialogFormVisible = true
+      },
+      //isCommend
+      handleChange(a){
+        a=this.$refs.isCommend.checked
+      },
+      handleCancel(){
+        this.dialogFormVisible = false
+        this.getProductList(params,'post')
+      },
+      handleDelete(data,index) {
+        this.$confirm('删除该记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.tableData.splice(index,1)
+          let pid=data.id
+          this.$http({
+            url:del_video+pid
+          }).then(data=>{
+            if(data.data.status==1000){
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+              this.totalCount--
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      },
+      handleSizeChange(val) {
+        this.pageSize=val
+        let params={currentPage:this.currentPage,pageSize:this.pageSize,isDel:0}
+        this.getProductList(params,'post')
+      },
+      handleCurrentChange(val) {
+        this.currentPage=val
+        let params={currentPage:val,pageSize:this.pageSize,isDel:0}
+        this.getProductList(params,'post')
+      },
+      handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+      handlePreview(file) {
+        console.log(file);
+      }
+    }
+  }
+</script>
+<style>
+</style>
