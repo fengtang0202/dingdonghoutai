@@ -10,19 +10,19 @@
       <el-table-column  header-align="center" prop="price" label="产品价格" width="100">
       </el-table-column>
     <el-table-column header-align="center" label="产品图" width="120">
-      <template scope="scope">
+      <template  slot-scope="scope">
         <img :src="scope.row.imgUrl" alt="" style="width:80px;height:60px;">
       </template>
     </el-table-column>
     <el-table-column header-align="center" prop="content" label="产品内容">
     </el-table-column>
     <el-table-column header-align="center" label="是否推荐" width="50">
-       <template scope="scope">
+       <template  slot-scope="scope">
          <el-checkbox  :checked="scope.row.isCommend==1?true:false"></el-checkbox>
        </template>
     </el-table-column>
     <el-table-column header-align="center" label="操作" width="200">
-      <template scope="scope">
+      <template  slot-scope="scope">
         <el-button size="small" @click="handleEdit(scope.row,scope.$index)">编辑</el-button>
         <el-button size="small" type="danger" @click="handleDelete(scope.row,scope.$index)">删除</el-button>
       </template>
@@ -51,18 +51,16 @@
         <el-form-item label="产品图片" :label-width="formLabelWidth">
           <el-upload
             class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :file-list="[{name:'',url:selectTable.imgUrl}]"
+            :action="upload_img"
+            :on-success="handleSuccess"
+            :on-remove="handleRemove(selectTable.imgUrl)"
             list-type="picture" style="width:80%;">
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
         </el-form-item>
         <el-form-item label="产品价格" :label-width="formLabelWidth">
             <el-input v-model="selectTable.price"  style="width:100px;"></el-input>
-            <el-checkbox  label="是否推荐"  border  :checked="selectTable.isCommend==1?true:false" ></el-checkbox>
+            <el-checkbox  label="是否推荐" @change="handleChange" :checked="selectTable.isCommend==1?true:false" ></el-checkbox>
         </el-form-item>
         <el-form-item label="产品内容" :label-width="formLabelWidth">
           <el-input v-model="selectTable.content" style="width:80%;" type="textarea" :rows="4"></el-input>
@@ -77,8 +75,7 @@
 </template>
 
 <script>
-  import {get_product_list,del_product,update_product} from '../api/url'
-  let params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}
+  import {get_product_list,del_product,update_product,upload_img,del_img} from '../api/url'
   export default {
     data() {
       return {
@@ -93,13 +90,16 @@
         dialogTableVisible: false,
         dialogFormVisible: false,
         formLabelWidth: '100px',
+        upload_img:upload_img,
+        imgUrl:'',
+        isCommend:false
       }
     },
     created(){
-       this.getProductList(params,'post')
+      this.getProductList('post')
     },
     methods:{
-      getProductList(params=null,method){
+      getProductList(method,params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}){
         this.$http({
             url:get_product_list,
             method:method ,
@@ -119,9 +119,14 @@
            done()
           })
           .catch(_ => {})
+        let params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}
+        this.getProductList(params,'post')
       },
       //修改产品
       handleUpdate(data){
+        data.imgUrl=this.imgUrl
+        data.isCommend=this.isCommend
+        data.isCommend=data.isCommend?1:0
         this.dialogFormVisible = false
         this.$http({
           method:'post',
@@ -130,19 +135,34 @@
             ...data
           }
         }).then(data=>{
-          console.log(data)
+          if(data.data.status==1000){
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            });
+          }else{
+            this.$message({
+              message:'修改失败',
+              type:'error'
+            })
+          }
+        }).then(()=>{
+          let params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}
+          this.getProductList(params,'post')
         })
+
       },
       //编辑button
       handleEdit(data,index) {
         this.selectTable = data
         this.dialogFormVisible = true
-        this.selectedIndex=index
+        // this.selectedIndex=index
         // sessionStorage.setItem("selectDetail",JSON.stringify(data))
       },
       //isCommend
-      handleChange(a){
-        a=this.$refs.isCommend.checked
+      handleChange(state){
+         this.isCommend=state?1:0
+         console.log(this.isCommend)
       },
       handleDelete(data,index) {
         this.$confirm('删除该记录, 是否继续?', '提示', {
@@ -174,23 +194,28 @@
       handleCancel(){
         this.dialogFormVisible = false
         // this.tableData.splice(this.selectedIndex,1,JSON.parse(sessionStorage.getItem('selectDetail')))
-        this.getProductList(params,'post')
+        this.getProductList('post')
       },
       handleSizeChange(val) {
         this.pageSize=val
         let params={currentPage:this.currentPage,pageSize:this.pageSize,isDel:0}
-        this.getProductList(params,'post')
+        this.getProductList('post',params)
       },
       handleCurrentChange(val) {
         this.currentPage=val
         let params={currentPage:val,pageSize:this.pageSize,isDel:0}
-        this.getProductList(params,'post')
+        this.getProductList('post',params)
       },
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
+      handleRemove(a) {
+         // this.$http({
+         //   ulr:del_img,
+         //   params:{
+         //     uploaderId:''
+         //   }
+         // })
       },
-      handlePreview(file) {
-        console.log(file);
+      handleSuccess(file) {
+        this.imgUrl=file.uploadedImageUrl
       }
     }
   }

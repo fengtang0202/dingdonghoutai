@@ -1,5 +1,5 @@
 //admin 用户管理
-const api="http://1720334v9d.iask.in/admin/"
+const api="http://47.104.150.166:8090/admin/"
 const user_login=`${api}sys`
 const update_psd=`${api}manager/updatePsd`
 const add_user=`${api}manager/add`
@@ -30,11 +30,22 @@ const company_list=`${api}company/list`
 const del_company=`${api}company/delete/`
 const update_company=`${api}company/update`
 const add_company=`${api}company/add`
+const all_company=`${api}company/allCompany`
 //品牌
 const brand_list=`${api}brand/list`
 const del_brand=`${api}brand/delete/`
 const update_brand=`${api}brand/update`
 const add_brand=`${api}brand/add`
+const all_brand=`${api}brand/allBrand`
+//图片上传
+const upload_img=`${api}img/upload`
+const update_img=`${api}img/update`
+const del_img=`${api}img/delete`
+//导航
+const all_class=`${api}class/allPclass/`
+const add_class=`${api}class/add/`
+const del_class=`${api}class/delete/`
+const update_class=`${api}class/update/`
 //公共变量
 let params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}
 module.exports={
@@ -63,9 +74,18 @@ module.exports={
   del_company,
   update_company,
   add_company,
+  all_company,
   brand_list,
   del_brand,
   update_brand,
   add_brand,
+  all_brand,
+  upload_img,
+  update_img,
+  del_img,
+  all_class,
+  add_class,
+  del_class,
+  update_class,
   params
 }

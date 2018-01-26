@@ -47,13 +47,13 @@
         },
         options: [{
           value: 1,
-          label: '娱乐'
+          label: '首页核心大图'
         }, {
           value: 2,
-          label: '体育'
+          label: '资讯核心大图'
         }, {
           value: 3,
-          label: '影视'
+          label: '人物核心大图'
         }],
         value: '',
         rules: {

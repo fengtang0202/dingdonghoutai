@@ -7,13 +7,14 @@
 </template>
 
 <script>
-  import{user_login} from '../api/url'
+  import{user_login,get_product_list} from '../api/url'
+  import {requestList} from '../api/request'
   export default {
     data(){
       return{
         uname:'',
         pwd:'',
-        id:1
+        id:1,
       }
     },
     methods:{
@@ -26,7 +27,10 @@
              this.$router.push('/main')
            }
         })
-      }
+      },
+      // handleClick(){
+      //   requestList(get_product_list)
+      // }
     }
   }
 </script>

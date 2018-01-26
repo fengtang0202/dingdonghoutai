@@ -1,7 +1,12 @@
 <template>
      <el-container>
        <el-header>
-
+         <div class="logo">
+            叮咚车评后台
+         </div>
+         <div class="info">
+            <span>欢迎,{{userName}}</span>
+         </div>
        </el-header>
        <el-container>
          <el-aside width="200px">
@@ -21,16 +26,33 @@
     export default {
          components:{
            navComponent
-         }
+         },
+      data(){
+           return{
+             userName:'唐锋'
+           }
+       }
     }
 </script>
 
 <style scoped>
+   .logo{
+     font-size: 30px;
+     line-height: 60px;
+     font-family: "Microsoft YaHei";
+   }
+   .info{
+     line-height: 60px;
+     margin-left:80%;
+   }
    .el-container{
      height:100%;
    }
   .el-header,.el-footer {
     background-color: #242f42;
+    display: flex;
+    color:#fff;
+    flex-direction: row;
   }
   .el-aside {
     background-color:#324157;

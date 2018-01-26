@@ -12,7 +12,7 @@
   </el-form-item>
   <el-form-item label="品牌名称" prop="brandId">
     <el-select v-model="ruleForm.brandId" placeholder="请选择活动区域">
-      <el-option v-for="item in options" :key='item.value' :label="item.label" :value="item.value"></el-option>
+      <el-option v-for="(value,key) in brandList" :key='key' :label="value" :value="key"></el-option>
     </el-select>
   </el-form-item>
   <el-form-item label="产品名称"  prop="name">
@@ -28,8 +28,9 @@
     <el-upload
       class="upload-demo"
       drag
-      action="1720334v9d.iask.in/admin/upload?uploaderId=1"
-      multiple :on-preview="handlePreview">
+      :action="upload_img"
+      multiple :on-success="handleSuccess"
+        :on-remove="handleRemove">
       <i class="el-icon-upload"></i>
       <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
       <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
@@ -46,7 +47,7 @@
 </el-form>
 </template>
 <script>
-  import {add_product} from '../api/url'
+  import {add_product,upload_img,all_brand} from '../api/url'
   export default {
     data() {
       return {
@@ -59,22 +60,34 @@
           content: '',
           isCommend:false,
         },
-          options: [{
-            value: 1,
-            label: '黄金糕'
-          }, {
-            value: 2,
-            label: '双皮奶'
-          }, {
-            value: 3,
-            label: '蚵仔煎'
-          }, {
-            value: 4,
-            label: '龙须面'
-          }, {
-            value: 5,
-            label: '北京烤鸭'
+          upload_img:upload_img,
+          options: [
+            {
+              value: 1,
+              label: '资讯'
+            },{
+              value: 2,
+              label: '微型车'
+            },{
+              value: 5,
+              label: '口碑'
+            },{
+            value: 6,
+            label: '微型车'
+            }, {
+            value: 7,
+            label: '乘用车'
+            }, {
+            value: 8,
+            label: '商务车'
+            }, {
+            value: 9,
+            label: '创业路'
+            }, {
+            value: 10,
+            label: '前言访谈'
           }],
+           brandList:null,
           value: '',
         rules: {
           classId:[
@@ -99,6 +112,13 @@
         }
       };
     },
+    created(){
+      this.$http({
+        url: all_brand
+      }).then(data=>{
+        this.brandList=data.data.brandMap
+      })
+    },
     methods: {
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
@@ -113,7 +133,7 @@
                  brandId:this.ruleForm.brandId,
                  name:this.ruleForm.name,
                  price:this.ruleForm.price,
-                 imgUrl:this.ruleForm.imgUrl,
+                 imgUrl:this.imgUrl,
                  content:this.ruleForm.content,
                  isCommend:this.ruleForm.isCommend?1:0
                }
@@ -133,12 +153,18 @@
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
-      handlePreview(file){
+      handleSuccess(file){
         //通过file.response 来接受服务器返回的数据
-        console.log(file.response)
+       this.imgUrl=file.uploadedImageUrl
+       console.log(this.imgUrl)
+      },
+      handleRemove(file,fileList){
+        //获取图片的地址
+       let img=file.response.uploadedImageUrl
       },
       handleChange(state){
         this.ruleForm.isCommend=state
+        console.log(state)
       }
     }
   }

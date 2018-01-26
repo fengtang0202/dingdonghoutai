@@ -5,19 +5,17 @@
         <el-table-column  header-align="center" type="selection"></el-table-column>
         <el-table-column  header-align="center" prop="id" label="ID" width="70">
         </el-table-column>
-        <el-table-column header-align="center" prop="type" label="类型" width="120">
-        </el-table-column>
         <el-table-column  header-align="center" prop="title" label="标题" width="100">
         </el-table-column>
         <el-table-column header-align="center" label="广告图" width="100">
-          <template scope="scope">
+          <template  slot-scope="scope">
             <img :src="scope.row.imgUrl" alt="" style="width:80px;height:60px;">
           </template>
         </el-table-column>
         <el-table-column header-align="center" prop="adLink" label="广告链接" width="100">
         </el-table-column>
         <el-table-column header-align="center" label="操作">
-          <template scope="scope">
+          <template  slot-scope="scope">
             <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button size="small" type="danger" @click="handleDelete(scope.row,scope.$index)">删除</el-button>
           </template>
@@ -59,14 +57,14 @@
             :file-list="[{name:'',url:selectTable.imgUrl}]"
             list-type="picture" style="width:80%;">
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            <div  slot-scope="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
         </el-form-item>
         <el-form-item label="广告链接" :label-width="formLabelWidth">
           <el-input v-model="selectTable.adLink"  style="width:300px;"></el-input>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div  scope="footer" class="dialog-footer">
         <el-button @click="handleCancel">取 消</el-button>
         <el-button type="primary" @click="handleUpdate(selectTable)">确 定</el-button>
       </div>
@@ -92,13 +90,13 @@
         formLabelWidth: '100px',
         options: [{
           value: 1,
-          label: '娱乐'
+          label: '首页核心大图'
         }, {
           value: 2,
-          label: '体育'
+          label: '资讯核心大图'
         }, {
           value: 3,
-          label: '影视'
+          label: '人物核心大图'
         }],
       }
     },
@@ -139,7 +137,17 @@
             ...data
           }
         }).then(data=>{
-          console.log(data)
+          if(data.data.status==1000){
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            });
+          }else{
+            this.$message({
+              message:'修改失败',
+              type:'error'
+            })
+          }
         })
       },
       //编辑button

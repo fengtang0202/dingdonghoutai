@@ -3,10 +3,10 @@
     <el-form-item label="企业名称" prop="companyId">
       <el-select v-model="ruleForm.companyId" placeholder="请选择">
         <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
+          v-for="(item,key) in options"
+          :key="item"
+          :label="item"
+          :value="key">
         </el-option>
       </el-select>
     </el-form-item>
@@ -17,8 +17,9 @@
       <el-upload
         class="upload-demo"
         drag
-        action="1720334v9d.iask.in/admin/upload?uploaderId=1"
-        multiple :on-preview="handlePreview">
+        :action="upload_img"
+        multiple :on-success="handleSuccess"
+        :on-remove="handleRemove">
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
         <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
@@ -34,7 +35,7 @@
   </el-form>
 </template>
 <script>
-  import {add_brand} from '../api/url'
+  import {add_brand,all_company,upload_img} from '../api/url'
   export default {
     data() {
       return {
@@ -44,10 +45,8 @@
           companyId:'',
           imglogoUrl:''
         },
-        options:[
-          {value:1,label:'艾玛'},
-          {value:2,label:'绿源'}
-        ],
+        upload_img:upload_img,
+        options:null,
         rules: {
           companyId:[
             { required: true, message: '请输入企业名称', trigger: 'blur' }
@@ -58,9 +57,17 @@
         }
       };
     },
+    created(){
+       this.$http({
+          url:all_company
+       }).then(data=>{
+           this.options=data.data.companyMap
+       })
+    },
     methods: {
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
+           this.ruleForm.imgUrl=this.imgUrl
           if (valid) {
             //调用接口
             this.$http({
@@ -85,12 +92,14 @@
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
-      handlePreview(file){
+      handleSuccess(file){
         //通过file.response 来接受服务器返回的数据
-        console.log(file.response)
+        this.imgUrl=file.uploadedImageUrl
+        console.log(this.imgUrl)
       },
-      handleChange(state){
-        this.ruleForm.isCommend=state
+      handleRemove(file,fileList){
+        //获取图片的地址
+        let img=file.response.uploadedImageUrl
       }
     }
   }

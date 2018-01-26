@@ -5,14 +5,10 @@
         <el-table-column  header-align="center" type="selection"></el-table-column>
         <el-table-column  header-align="center" prop="id" label="ID" width="70">
         </el-table-column>
-        <el-table-column  header-align="center" prop="companyId" label="品牌名称" width="150">
-        </el-table-column>
-        <el-table-column header-align="center" prop="imglogoUrl" label="企业logo" width="150">
-        </el-table-column>
-        <el-table-column  header-align="center" prop="description" label="品牌简介" width="200">
+        <el-table-column  header-align="center" prop="name" label="品牌名称" width="150">
         </el-table-column>
         <el-table-column header-align="center" label="操作">
-          <template scope="scope">
+          <template  slot-scope="scope">
             <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button size="small" type="danger" @click="handleDelete(scope.row,scope.$index)">删除</el-button>
           </template>
@@ -63,7 +59,7 @@
 </template>
 
 <script>
-  import {brand_list,del_brand,update_brand,params} from '../api/url'
+  import {brand_list,del_brand,update_brand} from '../api/url'
   export default {
     data() {
       return {
@@ -90,10 +86,10 @@
       }
     },
     created(){
-      this.getProductList(params,'post')
+      this.getProductList('post')
     },
     methods:{
-      getProductList(params=null,method){
+      getProductList(method,params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}){
         this.$http({
             url:brand_list,
             method:method ,
@@ -103,7 +99,6 @@
           }
         ).then(data=>{
           this.tableData=data.data.resultList
-          console.log(data.data)
           this.totalCount=data.data.totalCount
         })
       },
@@ -114,6 +109,7 @@
             done()
           })
           .catch(_ => {});
+        this.getProductList('post')
       },
       //修改产品
       handleUpdate(data){
@@ -135,10 +131,6 @@
       handleEdit(data,index) {
         this.selectTable = data
         this.dialogFormVisible = true
-      },
-      //isCommend
-      handleChange(a){
-        a=this.$refs.isCommend.checked
       },
       handleDelete(data,index) {
         this.$confirm('删除该记录, 是否继续?', '提示', {
@@ -169,16 +161,16 @@
       handleSizeChange(val) {
         this.pageSize=val
         let params={currentPage:this.currentPage,pageSize:this.pageSize,isDel:0}
-        this.getProductList(params,'post')
+        this.getProductList('post',params)
       },
       handleCancel(){
         this.dialogFormVisible = false
-        this.getProductList(params,'post')
+        this.getProductList('post')
       },
       handleCurrentChange(val) {
         this.currentPage=val
         let params={currentPage:val,pageSize:this.pageSize,isDel:0}
-        this.getProductList(params,'post')
+        this.getProductList('post',params)
       },
       handleRemove(file, fileList) {
         console.log(file, fileList);

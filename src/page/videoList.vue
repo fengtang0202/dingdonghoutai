@@ -3,11 +3,7 @@
     <el-container style="text-align:center;">
       <el-table :data="tableData" header-align="center" border max-height=""  size="medium " style="width:60%;margin:20px auto">
         <el-table-column  header-align="center" type="selection"></el-table-column>
-        <el-table-column  header-align="center" prop="id" label="ID" width="70">
-        </el-table-column>
-        <el-table-column header-align="center" prop="title" label="类型" width="120">
-        </el-table-column>
-        <el-table-column  header-align="center" prop="description" label="描述" width="100">
+        <el-table-column header-align="center" prop="title" label="视频标题" width="120">
         </el-table-column>
         <el-table-column  header-align="center" prop="linkUrl" label="视频链接" width="150">
         </el-table-column>
@@ -16,7 +12,7 @@
         <el-table-column header-align="center" prop="clickNum" label="点击量" width="100">
         </el-table-column>
         <el-table-column header-align="center" label="操作">
-          <template scope="scope">
+          <template  slot-scope="scope">
             <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button size="small" type="danger" @click="handleDelete(scope.row,scope.$index)">删除</el-button>
           </template>
@@ -62,7 +58,7 @@
           <el-input v-model="selectTable.clickNum"  style="width:300px;"></el-input>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div   scope="footer" class="dialog-footer">
         <el-button @click="handleCancel">取 消</el-button>
         <el-button type="primary" @click="handleUpdate(selectTable)">确 定</el-button>
       </div>
@@ -72,7 +68,6 @@
 
 <script>
   import {video_list,del_video,update_video} from '../api/url'
-  let params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}
   export default {
     data() {
       return {
@@ -99,10 +94,10 @@
       }
     },
     created(){
-      this.getProductList(params,'post')
+      this.getProductList('post')
     },
     methods:{
-      getProductList(params=null,method){
+      getProductList(method,params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}){
         this.$http({
             url:video_list,
             method:method ,
@@ -122,6 +117,7 @@
             done()
           })
           .catch(_ => {});
+        this.getProductList('post')
       },
       //修改产品
       handleUpdate(data){
@@ -147,7 +143,7 @@
       },
       handleCancel(){
         this.dialogFormVisible = false
-        this.getProductList(params,'post')
+        this.getProductList('post')
       },
       handleDelete(data,index) {
         this.$confirm('删除该记录, 是否继续?', '提示', {
@@ -178,12 +174,12 @@
       handleSizeChange(val) {
         this.pageSize=val
         let params={currentPage:this.currentPage,pageSize:this.pageSize,isDel:0}
-        this.getProductList(params,'post')
+        this.getProductList('post',params)
       },
       handleCurrentChange(val) {
         this.currentPage=val
         let params={currentPage:val,pageSize:this.pageSize,isDel:0}
-        this.getProductList(params,'post')
+        this.getProductList('post',params)
       },
       handleRemove(file, fileList) {
         console.log(file, fileList);

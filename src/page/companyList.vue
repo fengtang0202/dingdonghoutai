@@ -20,7 +20,7 @@
         <el-table-column header-align="center" prop="companyUrl" label="企业网址" >
         </el-table-column>
         <el-table-column header-align="center" label="操作">
-          <template scope="scope">
+          <template  slot-scope="scope">
             <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button size="small" type="danger" @click="handleDelete(scope.row,scope.$index)">删除</el-button>
           </template>
@@ -46,9 +46,6 @@
         <el-form-item label="企业名称" :label-width="formLabelWidth">
           <el-input v-model="selectTable.name"  style="width:300px;"></el-input>
         </el-form-item>
-        <el-form-item label="企业描述" :label-width="formLabelWidth">
-          <el-input v-model="selectTable.description"  style="width:300px;"></el-input>
-        </el-form-item>
         <el-form-item label="企业联系人" :label-width="formLabelWidth">
           <el-input v-model="selectTable.linkMan"  style="width:300px;"></el-input>
         </el-form-item>
@@ -65,7 +62,7 @@
           <el-input v-model="selectTable.companyUrl"  style="width:300px;"></el-input>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div scope="footer" class="dialog-footer">
         <el-button @click="handleCancel">取 消</el-button>
         <el-button type="primary" @click="handleUpdate(selectTable)">确 定</el-button>
       </div>
@@ -74,8 +71,7 @@
 </template>
 
 <script>
-  import {company_list,del_company,update_company,params} from '../api/url'
-  // let params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}
+  import {company_list,del_company,update_company} from '../api/url'
   export default {
     data() {
       return {
@@ -102,6 +98,7 @@
       }
     },
     created(){
+      let params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}
       this.getProductList(params,'post')
     },
     methods:{
@@ -125,6 +122,8 @@
             done()
           })
           .catch(_ => {});
+        let params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}
+        this.getProductList(params,'post')
       },
       //修改产品
       handleUpdate(data){
@@ -150,6 +149,7 @@
       },
       handleCancel(){
         this.dialogFormVisible = false
+        let params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}
         this.getProductList(params,'post')
       },
       handleDelete(data,index) {
