@@ -21,18 +21,15 @@
     <el-form-item label="资讯描述"  prop="description">
       <el-input v-model="ruleForm.description" style="width:217px;"></el-input>
     </el-form-item>
-    <el-form-item label="资讯内容"  prop="context">
-      <el-input v-model="ruleForm.context" style="width:217px;"></el-input>
-    </el-form-item>
-      <el-form-item label="资讯图片">
+      <el-form-item label="资讯图片" style="margin-bottom: 60px;width:40%;">
         <el-upload
           class="upload-demo"
           drag
-          action="https://jsonplaceholder.typicode.com/posts/"
-          multiple :on-preview="handlePreview">
+          list-type="picture-card"
+          :action="upload_img"
+          multiple :on-success="handleSuccess"
+          :on-remove="handleRemove">
           <i class="el-icon-upload"></i>
-          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-          <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
         </el-upload>
       </el-form-item>
     <el-form-item label="html路径"  prop="filePath">
@@ -46,6 +43,10 @@
       <el-checkbox label="是否外部链接" v-model="ruleForm.isOutlink" @change="handleChange(ruleForm.isOutlink)"></el-checkbox>
       <el-checkbox label="是否热点" v-model="ruleForm.isHot" @change="handleChange(ruleForm.isHot)"></el-checkbox>
     </el-form-item>
+    <el-form-item style="position: absolute;top:78px;right:10%;">
+      <quill-editor v-model="ruleForm.content" ref="myQuillEditor">
+      </quill-editor>
+    </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>
       <el-button @click="resetForm('ruleForm')">取消</el-button>
@@ -53,7 +54,8 @@
   </el-form>
 </template>
 <script>
-  import {add_news} from '../api/url'
+  import {add_news,upload_img} from '../api/url'
+  var qs = require('qs');
   export default {
     data() {
       return {
@@ -62,7 +64,7 @@
           title: '',
           author:'',
           description:'',
-          context:'',
+          content:'',
           imgUrl: '',
           filePath:'',
           htmlFolder:'',
@@ -71,25 +73,28 @@
           isCommend:false,
           isHot:false
         },
+        //图片上传的state
+        deleteImg:'',
+        imgs:[],
+        upload_img:upload_img,
         options: [{
           value: "王霞",
         }, {
           value: "方旖旎",
         }, {
           value: "聂明晶",
-        }],
+        },
+          {
+            value:"姜汝宽"
+          }
+        ],
         nav:[
           {
-            value:1,
-            label:'体育'
-          },
-          {
-            value:2,
-            label:'影视',
-          },
-          {
-            value:3,
-            label:'娱乐'
+            value: 9,
+            label: '创业路'
+          }, {
+            value: 10,
+            label: '前言访谈'
           }
         ],
         value: '',
@@ -126,16 +131,14 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             //调用接口
-            this.$http({
-              url:add_news,
-              method:'post',
-              params:{
+            this.$http.post(add_news,
+              qs.stringify({
                 // ...this.ruleForm
                 classId:this.ruleForm.classId,
                 title:this.ruleForm.title,
                 author:this.ruleForm.author,
                 description:this.ruleForm.description,
-                context:this.ruleForm.content,
+                content:this.ruleForm.content,
                 imgUrl:'',
                 filePath:this.ruleForm.filePath,
                 htmlFolder:this.ruleForm.htmlFolder,
@@ -143,8 +146,12 @@
                 outlinkUrl:this.ruleForm.outlinkUrl,
                 isHot:this.ruleForm.isHot?1:0,
                 isCommend:this.ruleForm.isCommend?1:0
+              }),{
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                },
               }
-            }).then(data=>{
+            ).then(data=>{
              if(data.data.status==1000){
                this.$message({message:'添加产品成功',type:'success'});
              }else{
@@ -161,9 +168,27 @@
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
-      handlePreview(file){
+      handleSuccess(file){
+        this.imgs.push(file)
+      },
+      handleRemove(file,fileList){
+        //获取图片的地址
         //通过file.response 来接受服务器返回的数据
-        console.log(file.response)
+        this.deleteImg=file.response.url
+        // console.log(this.deleteImg)
+        this.imgs=[]
+        fileList.forEach(value=>{
+          this.imgs.push(value.response)
+        })
+        this.$http({
+          url:del_img,
+          method:'post',
+          params:{
+            imgName:this.deleteImg
+          }
+        }).then(data=>{
+          console.log(data)
+        })
       },
       handleChange(state){
         this.ruleForm.isCommend=state
@@ -171,3 +196,13 @@
     }
   }
 </script>
+<style scoped>
+  .quill-editor {
+    height: 400px;
+    width:700px;
+  }
+  .ql-container {
+    width:700px;
+    height: 700px;
+  }
+</style>
