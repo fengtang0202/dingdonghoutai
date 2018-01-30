@@ -38,7 +38,7 @@
       }
     },
     created(){
-      if(sessionStorage.getItem("info")){
+      if(localStorage.getItem("info")){
         this.$router.push('/main')
       }
       document.onkeydown=()=>{
@@ -57,7 +57,7 @@
               console.log()
               if(data.data.admin){
                 this.$router.push('/main')
-                sessionStorage.setItem("info",data.data.admin.sname)
+                localStorage.setItem("info",data.data.admin.sname)
               }
             })
           } else {

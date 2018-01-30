@@ -20,7 +20,7 @@ Vue.config.productionTip = false
 /* eslint-disable no-new */
 router.beforeEach((to, from, next) => {
   if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
-    if (sessionStorage.getItem("info")) {  // 通过vuex state获取当前的token是否存在
+    if (localStorage.getItem("info")) {  // 通过vuex state获取当前的token是否存在
       next();
     }
     else {

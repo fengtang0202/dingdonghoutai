@@ -134,9 +134,7 @@
                 author:this.ruleForm.author,
                 description:this.ruleForm.description,
                 content:this.ruleForm.content,
-                imgUrl:'',
-                filePath:this.ruleForm.filePath,
-                htmlFolder:this.ruleForm.htmlFolder,
+                // imgUrl:JSON.stringify(this.imgs),
                 isOutlink:this.ruleForm.isOutlink?1:0,
                 outlinkUrl:this.ruleForm.outlinkUrl,
                 isHot:this.ruleForm.isHot?1:0,
@@ -150,7 +148,7 @@
              if(data.data.status==1000){
                this.$message({message:'添加产品成功',type:'success'});
              }else{
-               this.$message({message:'添加失败',type:'warning'})
+               this.$message({message:'添加失败',type:'error'})
              }
             })
           } else {

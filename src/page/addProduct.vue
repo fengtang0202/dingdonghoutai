@@ -43,7 +43,7 @@
                   @blur="onEditorBlur($event)">
     </quill-editor>
   </el-form-item>
-  <el-form-item  label-width="120px"  style="width:100%;text-align:center;margin-top:80px" prop="desc">
+  <el-form-item  label-width="120px"  style="width:100%;margin-top:80px" prop="desc">
     <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>
     <el-button @click="resetForm('ruleForm')">取消</el-button>
   </el-form-item>

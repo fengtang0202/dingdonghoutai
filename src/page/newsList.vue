@@ -13,10 +13,8 @@
         </el-table-column>
         <el-table-column  label="是否外链" width="80">
           <template  slot-scope="scope">
-            <el-checkbox  v-model="scope.row.isCommend==1?true:false"></el-checkbox>
+            <el-checkbox  v-model="scope.row.isOutlink==1?true:false"></el-checkbox>
           </template>
-        </el-table-column>
-        <el-table-column prop="outlinkUrl" v-if="tableData.isOutlink==1?true:false" label="外部链接" width="80">
         </el-table-column>
         <el-table-column prop="isCommend"  label="是否推荐" width="80">
           <template  slot-scope="scope">
@@ -25,7 +23,7 @@
         </el-table-column>
         <el-table-column prop="isHot" label="是否热点" width="80">
           <template  slot-scope="scope">
-            <el-checkbox  v-model="scope.row.isCommend==1?true:false"></el-checkbox>
+            <el-checkbox  v-model="scope.row.isHot==1?true:false"></el-checkbox>
           </template>
         </el-table-column>
         <el-table-column  label="操作">
@@ -70,16 +68,15 @@
         <el-form-item  label='点击量' :label-width="formLabelWidth">
           <!--<el-input v-model="" label="点击量" style="width:80px;"></el-input>-->
           <el-input-number v-model="selectTable.clickNum"></el-input-number>
-          <el-checkbox  label="推荐"  border  :checked="selectTable.isCommend==1?true:false" ></el-checkbox>
-          <el-checkbox  label="外部链接"  border  :checked="selectTable.isOutlink==1?true:false" ></el-checkbox>
-          <el-checkbox  label="热点"  border  :checked="selectTable.isHot==1?true:false" ></el-checkbox>
+          <el-checkbox  label="外部链接"  border  @change="handleChange1" :checked="selectTable.isOutlink==1?true:false" ></el-checkbox>
+          <el-checkbox  label="推荐"  border  @change="handleChange" :checked="selectTable.isCommend==1?true:false" ></el-checkbox>
+          <el-checkbox  label="热点"  border @change="handleChange2" :checked="selectTable.isHot==1?true:false" ></el-checkbox>
         </el-form-item>
         <el-form-item label="资讯描述" :label-width="formLabelWidth">
           <el-input v-model="selectTable.description" style="width:80%;" type="textarea" :rows="4"></el-input>
         </el-form-item>
         <el-form-item label="资讯内容" :label-width="formLabelWidth">
-          <quill-editor v-model="selectTable.content"
-                        ref="myQuillEditor">
+          <quill-editor v-model="selectTable.content">
           </quill-editor>
         </el-form-item>
       </el-form>
@@ -111,6 +108,8 @@
         upload_img:upload_img,
         imgUrl:{},
         isCommend:false,
+        isOutlink:false,
+        isHot:false
       }
     },
     created(){
@@ -153,6 +152,10 @@
         this.dialogFormVisible = false
         data.isCommend=this.isCommend
         data.isCommend=data.isCommend?1:0
+        data.isHot=this.isHot
+        data.isHot=data.isHot?1:0
+        data.isOutlink=this.isOutlink
+        data.isOutlink=data.isOutlink?1:0
         data.imgUrl=this.imgUrl
         delete data.addTime
         this.$http.post(
@@ -184,7 +187,12 @@
       //isCommend
       handleChange(state){
         this.isCommend=state?1:0
-        console.log(this.isCommend)
+      },
+      handleChange1(state){
+        this.isOutlink=state?1:0
+      },
+      handleChange2(state){
+        this.isHot=state?1:0
       },
       //删除news
       handleDelete(data,index) {
