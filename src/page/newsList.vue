@@ -1,31 +1,31 @@
 <template>
-  <el-container >
+  <el-container>
     <el-container style="text-align:center">
-      <el-table max-height="700"  :data="tableData"  border style="margin-bottom:40px;width:100%">
+      <el-table max-height="700"  :data="tableData"   border style="margin:20px auto;width:60%;">
         <el-table-column  type="selection"></el-table-column>
-        <el-table-column prop="title" label="资讯标题" width="100">
+        <el-table-column header-align="center" prop="title" label="资讯标题" width="100">
         </el-table-column>
-        <el-table-column prop="author" label="作者" width="100">
+        <el-table-column prop="author" label="作者" header-align="center" width="100">
         </el-table-column>
-        <el-table-column prop="addTime"  label="添加的时间" width="100">
+        <el-table-column prop="addTime"  label="添加的时间" header-align="center" width="100">
         </el-table-column>
-        <el-table-column prop="clickNum" :formatter="formatSex" label="点击量" width="100">
+        <el-table-column prop="clickNum"  header-align="center"label="点击量" width="100">
         </el-table-column>
         <el-table-column  label="是否外链" width="80">
           <template  slot-scope="scope">
-            <el-checkbox  @change="handleChange" :checked="scope.row.isCommend==1?true:false"></el-checkbox>
+            <el-checkbox  v-model="scope.row.isCommend==1?true:false"></el-checkbox>
           </template>
         </el-table-column>
-        <el-table-column prop="outlinkUrl" label="外部链接" width="80">
+        <el-table-column prop="outlinkUrl" v-if="tableData.isOutlink==1?true:false" label="外部链接" width="80">
         </el-table-column>
         <el-table-column prop="isCommend"  label="是否推荐" width="80">
           <template  slot-scope="scope">
-            <el-checkbox :checked="scope.row.isCommend==1?true:false"></el-checkbox>
+            <el-checkbox v-model="scope.row.isCommend==1?true:false"></el-checkbox>
           </template>
         </el-table-column>
-        <el-table-column prop="isHot" label="是否热点" width="70">
+        <el-table-column prop="isHot" label="是否热点" width="80">
           <template  slot-scope="scope">
-            <el-checkbox  :checked="scope.row.isCommend==1?true:false"></el-checkbox>
+            <el-checkbox  v-model="scope.row.isCommend==1?true:false"></el-checkbox>
           </template>
         </el-table-column>
         <el-table-column  label="操作">
@@ -55,22 +55,22 @@
         <el-form-item label="资讯标题" :label-width="formLabelWidth">
           <el-input v-model="selectTable.title"  style="width:80%;" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="资讯配图" :label-width="formLabelWidth">
-          <el-upload
-            class="upload-demo"
-            :action="upload_img"
-            :on-success="handleSuccess"
-            :on-remove="handleRemove"
-            :file-list="filelist"
-            list-type="picture" style="width:80%;">
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-          </el-upload>
-        </el-form-item>
+        <!--<el-form-item label="资讯配图" :label-width="formLabelWidth">-->
+          <!--<el-upload-->
+            <!--class="upload-demo"-->
+            <!--:action="upload_img"-->
+            <!--:on-success="handleSuccess"-->
+            <!--:on-remove="handleRemove"-->
+            <!--:file-list="filelist"-->
+            <!--list-type="picture" style="width:80%;">-->
+            <!--<el-button size="small" type="primary">点击上传</el-button>-->
+            <!--<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
+          <!--</el-upload>-->
+        <!--</el-form-item>-->
         <el-form-item  label='点击量' :label-width="formLabelWidth">
           <!--<el-input v-model="" label="点击量" style="width:80px;"></el-input>-->
           <el-input-number v-model="selectTable.clickNum"></el-input-number>
-          <el-checkbox  label="推荐"  border @change="handleChange" :checked="selectTable.isCommend==1?true:false" ></el-checkbox>
+          <el-checkbox  label="推荐"  border  :checked="selectTable.isCommend==1?true:false" ></el-checkbox>
           <el-checkbox  label="外部链接"  border  :checked="selectTable.isOutlink==1?true:false" ></el-checkbox>
           <el-checkbox  label="热点"  border  :checked="selectTable.isHot==1?true:false" ></el-checkbox>
         </el-form-item>
@@ -78,7 +78,9 @@
           <el-input v-model="selectTable.description" style="width:80%;" type="textarea" :rows="4"></el-input>
         </el-form-item>
         <el-form-item label="资讯内容" :label-width="formLabelWidth">
-          <el-input v-model="selectTable.content" style="width:80%;" type="textarea" :rows="4"></el-input>
+          <quill-editor v-model="selectTable.content"
+                        ref="myQuillEditor">
+          </quill-editor>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -92,6 +94,7 @@
 <script>
   import {get_news_list,del_news,update_news,upload_img} from '../api/url'
   import {formatDate} from '../api/filters'
+  var qs = require('qs');
   export default {
     data() {
       return {
@@ -107,7 +110,6 @@
         formLabelWidth: '100px',
         upload_img:upload_img,
         imgUrl:{},
-        filelist:[{url:''}],
         isCommend:false,
       }
     },
@@ -121,9 +123,9 @@
       }
     },
     methods:{
-      formatSex: function (row, column) {
-        return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '未知';
-      },
+      // formatSex: function (row, column) {
+      //   return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '未知';
+      // },
       getProductList(method,params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}){
         this.$http({
             url:get_news_list,
@@ -153,14 +155,12 @@
         data.isCommend=data.isCommend?1:0
         data.imgUrl=this.imgUrl
         delete data.addTime
-        // delete data.content
-        this.$http({
-          method:'post',
-          url:update_news,
-          data:{
+        this.$http.post(
+          update_news,
+          qs.stringify({
               ...data
-          }
-        }).then(data=>{
+          })
+        ).then(data=>{
           if(data.data.status==1000){
             this.$message({
               message: '修改成功',
@@ -172,6 +172,8 @@
               type:'error'
             })
           }
+        }).then(()=>{
+          this.getProductList("post")
         })
       },
       //编辑button
@@ -203,6 +205,7 @@
                 message: '删除成功!'
               });
               this.totalCount--
+              this.getProductList('post')
             }
           })
         }).catch(() => {
@@ -242,5 +245,6 @@
     }
   }
 </script>
-<style>
+<style scoped>
+
 </style>

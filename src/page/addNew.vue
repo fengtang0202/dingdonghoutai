@@ -32,16 +32,10 @@
           <i class="el-icon-upload"></i>
         </el-upload>
       </el-form-item>
-    <el-form-item label="html路径"  prop="filePath">
-      <el-input v-model="ruleForm.filePath" style="width:217px;"></el-input>
-    </el-form-item>
-    <el-form-item label="html文件夹"  prop="htmlFolder	">
-      <el-input v-model="ruleForm.htmlFolder" style="width:217px;"></el-input>
-    </el-form-item>
     <el-form-item>
-      <el-checkbox label="是否推荐" v-model="ruleForm.isCommend" @change="handleChange(ruleForm.isCommend)"></el-checkbox>
-      <el-checkbox label="是否外部链接" v-model="ruleForm.isOutlink" @change="handleChange(ruleForm.isOutlink)"></el-checkbox>
-      <el-checkbox label="是否热点" v-model="ruleForm.isHot" @change="handleChange(ruleForm.isHot)"></el-checkbox>
+      <el-checkbox label="是否推荐"  v-model="ruleForm.isCommend" ></el-checkbox>
+      <el-checkbox label="是否外部链接" v-model="ruleForm.isOutlink" ></el-checkbox>
+      <el-checkbox label="是否热点" v-model="ruleForm.isHot"></el-checkbox>
     </el-form-item>
     <el-form-item style="position: absolute;top:78px;right:10%;">
       <quill-editor v-model="ruleForm.content" ref="myQuillEditor">
@@ -54,7 +48,7 @@
   </el-form>
 </template>
 <script>
-  import {add_news,upload_img} from '../api/url'
+  import {add_news,upload_img,del_img} from '../api/url'
   var qs = require('qs');
   export default {
     data() {
@@ -75,6 +69,7 @@
         },
         //图片上传的state
         deleteImg:'',
+        del_img:del_img,
         imgs:[],
         upload_img:upload_img,
         options: [{
@@ -167,6 +162,7 @@
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
+        console.log(formName)
       },
       handleSuccess(file){
         this.imgs.push(file)
@@ -175,7 +171,6 @@
         //获取图片的地址
         //通过file.response 来接受服务器返回的数据
         this.deleteImg=file.response.url
-        // console.log(this.deleteImg)
         this.imgs=[]
         fileList.forEach(value=>{
           this.imgs.push(value.response)
@@ -189,9 +184,6 @@
         }).then(data=>{
           console.log(data)
         })
-      },
-      handleChange(state){
-        this.ruleForm.isCommend=state
       }
     }
   }

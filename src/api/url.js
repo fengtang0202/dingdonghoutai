@@ -2,6 +2,7 @@
 const api="http://47.104.150.166:8090/admin/"
 const user_login=`${api}sys`
 const update_psd=`${api}manager/updatePsd`
+
 const add_user=`${api}manager/add`
 const del_user=`${api}manager/delete`
 const get_user=`${api}manager/get`
@@ -12,7 +13,7 @@ const update_product=`${api}product/update`
 const add_product=`${api}product/add`
 //资讯
 const get_news_list=`${api}info/list`
-const del_news=`${api}module/delete/`
+const del_news=`${api}info/delete/`
 const add_news=`${api}info/add`
 const update_news=`${api}info/update`
 //广告

@@ -37,11 +37,12 @@
         <el-form-item label="品牌logo" :label-width="formLabelWidth">
           <el-upload
             class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-preview="handlePreview"
+            :action="upload_img"
+            :on-success="handleSuccess"
             :on-remove="handleRemove"
-            :file-list="[{name:'',url:selectTable.imgUrl}]"
-            list-type="picture" style="width:80%;">
+            :limit="limit"
+            :file-list="[{name:'',url:selectTable.imglogoUrl}]"
+            list-type="picture-card" style="width:80%;">
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
@@ -59,7 +60,7 @@
 </template>
 
 <script>
-  import {brand_list,del_brand,update_brand} from '../api/url'
+  import {brand_list,del_brand,update_brand,del_img,upload_img} from '../api/url'
   export default {
     data() {
       return {
@@ -73,6 +74,10 @@
         dialogTableVisible: false,
         dialogFormVisible: false,
         formLabelWidth: '100px',
+        imgUrlObj:'',
+        del_img:del_img,
+        upload_img:upload_img,
+        limit:1,
         options: [{
           value: 1,
           label: '娱乐'
@@ -114,6 +119,7 @@
       //修改产品
       handleUpdate(data){
         this.dialogFormVisible = false
+        data.imglogoUrl=this.imgUrlObj
         this.$http({
           method:'post',
           url:update_brand,
@@ -172,12 +178,22 @@
         let params={currentPage:val,pageSize:this.pageSize,isDel:0}
         this.getProductList('post',params)
       },
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
+      handleSuccess(file){
+      //通过file.response 来接受服务器返回的数据
+      this.imgUrlObj=file.url
+      console.log(this.imgUrlObj)
       },
-      handlePreview(file) {
-        console.log(file);
-      }
+    handleRemove(){
+      this.$http({
+        url:del_img,
+        method:'post',
+        params:{
+          imgName:this.imgUrlObj
+        }
+      }).then(data=>{
+        console.log(data)
+      })
+    }
     }
   }
 </script>

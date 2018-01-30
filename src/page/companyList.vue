@@ -98,11 +98,10 @@
       }
     },
     created(){
-      let params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}
-      this.getProductList(params,'post')
+      this.getProductList('post')
     },
     methods:{
-      getProductList(params=null,method){
+      getProductList(method,params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}){
         this.$http({
             url:company_list,
             method:method ,
@@ -122,8 +121,7 @@
             done()
           })
           .catch(_ => {});
-        let params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}
-        this.getProductList(params,'post')
+        this.getProductList('post')
       },
       //修改产品
       handleUpdate(data){
@@ -149,8 +147,7 @@
       },
       handleCancel(){
         this.dialogFormVisible = false
-        let params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}
-        this.getProductList(params,'post')
+        this.getProductList('post')
       },
       handleDelete(data,index) {
         this.$confirm('删除该记录, 是否继续?', '提示', {
@@ -187,12 +184,6 @@
         this.currentPage=val
         let params={currentPage:val,pageSize:this.pageSize,isDel:0}
         this.getProductList(params,'post')
-      },
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePreview(file) {
-        console.log(file);
       }
     }
   }

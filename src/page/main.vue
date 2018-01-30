@@ -29,9 +29,12 @@
          },
       data(){
            return{
-             userName:'唐锋'
+             userName:''
            }
-       }
+       },
+      created(){
+           this.userName=sessionStorage.getItem("info")
+      }
     }
 </script>
 

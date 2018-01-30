@@ -9,14 +9,14 @@
       </el-table-column>
       <el-table-column  header-align="center" prop="price" label="产品价格" width="100">
       </el-table-column>
-    <el-table-column header-align="center" label="产品图" width="120">
-      <template  slot-scope="scope">
-        <img :src="scope.row.imgUrl" alt="" style="width:80px;height:60px;">
-      </template>
-    </el-table-column>
+    <!--<el-table-column header-align="center" label="产品图" width="120">-->
+      <!--<template  slot-scope="scope">-->
+        <!--<img :src="scope.row.imgUrl" alt="" style="width:80px;height:60px;">-->
+      <!--</template>-->
+    <!--</el-table-column>-->
     <el-table-column header-align="center" label="是否推荐" width="80">
        <template  slot-scope="scope">
-         <el-checkbox  :checked="scope.row.isCommend==1?true:false"></el-checkbox>
+         <el-checkbox  v-model="scope.row.isCommend==1?true:false"></el-checkbox>
        </template>
     </el-table-column>
     <el-table-column header-align="center" label="操作" >
@@ -159,20 +159,10 @@
         this.selectTable = data
         this.dialogFormVisible = true
         this.imgUrlObj=this.tableData[index].imgUrlObj
-        // let obj={}
-        // if( this.tableData[index].imgUrlObj) {
-        //   this.tableData[index].imgUrlObj.forEach(value => {
-        //     obj.name = value.name
-        //     obj.url = value.url
-        //     this.imgUrlObj.push(obj)
-        //   })
-        // }
-        console.log(this.imgUrlObj)
       },
       //isCommend
       handleChange(state){
          this.isCommend=state?1:0
-         console.log(this.isCommend)
       },
       handleDelete(data,index) {
         this.$confirm('删除该记录, 是否继续?', '提示', {
@@ -218,7 +208,6 @@
       },
       handleRemove(file,fileList) {
         this.imgUrlObj=fileList
-        console.log(this.imgUrlObj)
       },
       handleSuccess(file,fileList) {
         // this.imgUrl=file.uploadedImageUrl
@@ -227,8 +216,6 @@
         // console.log(fileList)
         // console.log(this.imgUrlObj)
         this.imgUrlObj.push(file)
-        console.log(file)
-        console.log(this.imgUrlObj)
       }
     }
   }

@@ -55,7 +55,7 @@
           <el-input v-model="selectTable.shareCode"  style="width:300px;"></el-input>
         </el-form-item>
         <el-form-item label="点击量" :label-width="formLabelWidth">
-          <el-input v-model="selectTable.clickNum"  style="width:300px;"></el-input>
+          <el-input-number v-model="selectTable.clickNum" label="描述文字"></el-input-number>
         </el-form-item>
       </el-form>
       <div   scope="footer" class="dialog-footer">

@@ -25,58 +25,103 @@ export default new Router({
     {
       path:'/main',
       component:main,
+      meta: {
+        requireAuth: true,
+      },
       children:[
         {
           path:'/',
-          component:productList
+          component:productList,
+          meta: {
+            requireAuth: true,
+          },
         },
         {
           path:'/videoList',
-          component:videoList
+          component:videoList,
+          meta: {
+            requireAuth: true,
+          },
         },
         {
           path:'/newsList',
-          component:newsList
+          component:newsList,
+          meta: {
+            requireAuth: true,
+          },
         },
         {
           path:'/productList',
-          component:productList
+          component:productList,
+          meta: {
+            requireAuth: true,
+          },
         },
         {
           path:'/advList',
-          component:advList
+          component:advList,
+          meta: {
+            requireAuth: true,
+          },
         },
         {
           path:'/addProduct',
-          component:addProduct
+          component:addProduct,
+          meta: {
+            requireAuth: true,
+          },
         },
         {
           path:'/userList',
-          component:userList
+          component:userList,
+          meta: {
+            requireAuth: true,
+          },
         },
         {
           path:'/addVideo',
-          component:addVideo
+          component:addVideo,
+          meta: {
+            requireAuth: true,
+          },
         },
         {
           path:'/addNew',
-          component:addNew
+          component:addNew,
+          meta: {
+            requireAuth: true,
+          },
         },{
           path:'/addAdv',
-          component:addAdv
+          component:addAdv,
+          meta: {
+            requireAuth: true,
+          },
         },{
           path:'/companyList',
-          component:companyList
+          component:companyList,
+          meta: {
+            requireAuth: true,
+          },
         },{
           path:'/addCompany',
-          component:addCompany
+          component:addCompany,
+          meta: {
+            requireAuth: true,
+          },
         },
         {
           path:'/brandList',
-          component:brandList
+          component:brandList,
+          meta: {
+            requireAuth: true,
+          },
         },{
           path:'/addBrand',
-          component:addBrand
+          component:addBrand,
+          meta: {
+            requireAuth: true,
+          }
         }
       ]
     }
