@@ -3,6 +3,7 @@
     <el-container style="text-align:center;">
       <el-table :data="tableData" header-align="center" border max-height=""  size="medium " style="width:60%;margin:20px auto">
         <el-table-column  header-align="center" type="selection"></el-table-column>
+        <el-table-column label="ID" prop="id" header-align="center" width="80"></el-table-column>
         <el-table-column header-align="center" prop="title" label="视频标题" width="120">
         </el-table-column>
         <el-table-column  header-align="center" prop="linkUrl" label="视频链接" width="150">
@@ -82,14 +83,8 @@
         dialogFormVisible: false,
         formLabelWidth: '100px',
         options: [{
-          value: 1,
-          label: '娱乐'
-        }, {
           value: 2,
-          label: '体育'
-        }, {
-          value: 3,
-          label: '影视'
+          label: '评测'
         }],
       }
     },

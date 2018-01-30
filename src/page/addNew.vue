@@ -11,31 +11,32 @@
       </el-select>
     </el-form-item>
     <el-form-item label="作者" prop="author">
-      <el-select v-model="ruleForm.author" placeholder="请选择作者">
-        <el-option v-for="item in options" :key='item.value' :label="item.label" :value="item.value"></el-option>
-      </el-select>
+      <el-input v-model="ruleForm.author" style="width:217px;"></el-input>
     </el-form-item>
     <el-form-item label="资讯标题"  prop="title">
-      <el-input v-model="ruleForm.title" style="width:217px;"></el-input>
+      <el-input v-model="ruleForm.title" style="width:400px;"></el-input>
     </el-form-item>
     <el-form-item label="资讯描述"  prop="description">
-      <el-input v-model="ruleForm.description" style="width:217px;"></el-input>
+      <el-input type="textarea"  autosize v-model="ruleForm.description" style="width:400px;"></el-input>
     </el-form-item>
-      <el-form-item label="资讯图片" style="margin-bottom: 60px;width:40%;">
-        <el-upload
-          class="upload-demo"
-          drag
-          list-type="picture-card"
-          :action="upload_img"
-          multiple :on-success="handleSuccess"
-          :on-remove="handleRemove">
-          <i class="el-icon-upload"></i>
-        </el-upload>
-      </el-form-item>
+      <!--<el-form-item label="资讯图片" style="margin-bottom: 60px;width:40%;">-->
+        <!--<el-upload-->
+          <!--class="upload-demo"-->
+          <!--drag-->
+          <!--list-type="picture-card"-->
+          <!--:action="upload_img"-->
+          <!--multiple :on-success="handleSuccess"-->
+          <!--:on-remove="handleRemove">-->
+          <!--<i class="el-icon-upload"></i>-->
+        <!--</el-upload>-->
+      <!--</el-form-item>-->
     <el-form-item>
       <el-checkbox label="是否推荐"  v-model="ruleForm.isCommend" ></el-checkbox>
       <el-checkbox label="是否外部链接" v-model="ruleForm.isOutlink" ></el-checkbox>
       <el-checkbox label="是否热点" v-model="ruleForm.isHot"></el-checkbox>
+    </el-form-item>
+    <el-form-item label="外部链接" v-if="ruleForm.isOutlink" style="width:400px;">
+          <el-input v-model="ruleForm.outlinkUrl"></el-input>
     </el-form-item>
     <el-form-item style="position: absolute;top:78px;right:10%;">
       <quill-editor v-model="ruleForm.content" ref="myQuillEditor">
@@ -72,24 +73,25 @@
         del_img:del_img,
         imgs:[],
         upload_img:upload_img,
-        options: [{
-          value: "王霞",
-        }, {
-          value: "方旖旎",
-        }, {
-          value: "聂明晶",
-        },
-          {
-            value:"姜汝宽"
-          }
-        ],
         nav:[
+          {
+            value:1,
+            label:'资讯'
+          },
+          {
+            value:5,
+            label:'口碑'
+          },
           {
             value: 9,
             label: '创业路'
           }, {
             value: 10,
             label: '前言访谈'
+          },
+          {
+            value:11,
+            label:'经销商大调查'
           }
         ],
         value: '',

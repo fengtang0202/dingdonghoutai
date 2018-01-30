@@ -1,20 +1,24 @@
 <template>
   <el-container>
     <el-container style="text-align:center">
-      <el-table max-height="700"  :data="tableData"   border style="margin:20px auto;width:60%;">
+      <el-table max-height="700" stripe :data="tableData"   border style="margin:20px auto;width:60%;">
         <el-table-column  type="selection"></el-table-column>
-        <el-table-column header-align="center" prop="title" label="资讯标题" width="100">
+        <el-table-column label="ID" prop="id" header-align="center" width="80"></el-table-column>
+        <el-table-column header-align="center"  label="资讯标题" width="100">
+          <template  slot-scope="scope">
+            <a class="outLinkUrl"  :href="scope.row.outlinkUrl" v-if="scope.row.isOutlink==1?true:false">{{scope.row.title}}</a>
+            <span v-else>{{scope.row.title}}</span>
+          </template>
+          
         </el-table-column>
         <el-table-column prop="author" label="作者" header-align="center" width="100">
         </el-table-column>
-        <el-table-column prop="addTime"  label="添加的时间" header-align="center" width="100">
+        <el-table-column  label="添加的时间" header-align="center" width="100">
+            <template slot-scope="scope">
+                <span>{{scope.row.addTime|formatDate}}</span>
+            </template>
         </el-table-column>
         <el-table-column prop="clickNum"  header-align="center"label="点击量" width="100">
-        </el-table-column>
-        <el-table-column  label="是否外链" width="80">
-          <template  slot-scope="scope">
-            <el-checkbox  v-model="scope.row.isOutlink==1?true:false"></el-checkbox>
-          </template>
         </el-table-column>
         <el-table-column prop="isCommend"  label="是否推荐" width="80">
           <template  slot-scope="scope">
@@ -68,9 +72,9 @@
         <el-form-item  label='点击量' :label-width="formLabelWidth">
           <!--<el-input v-model="" label="点击量" style="width:80px;"></el-input>-->
           <el-input-number v-model="selectTable.clickNum"></el-input-number>
-          <el-checkbox  label="外部链接"  border  @change="handleChange1" :checked="selectTable.isOutlink==1?true:false" ></el-checkbox>
-          <el-checkbox  label="推荐"  border  @change="handleChange" :checked="selectTable.isCommend==1?true:false" ></el-checkbox>
-          <el-checkbox  label="热点"  border @change="handleChange2" :checked="selectTable.isHot==1?true:false" ></el-checkbox>
+          <el-checkbox  label="外部链接"  border  @change="handleChange1" :checked="this.isOutlink" ></el-checkbox>
+          <el-checkbox  label="推荐"  border  @change="handleChange" :checked="this.isCommend" ></el-checkbox>
+          <el-checkbox  label="热点"  border @change="handleChange2" :checked="this.isHot" ></el-checkbox>
         </el-form-item>
         <el-form-item label="资讯描述" :label-width="formLabelWidth">
           <el-input v-model="selectTable.description" style="width:80%;" type="textarea" :rows="4"></el-input>
@@ -98,7 +102,7 @@
         tableData:[],
         selectTable:[],
         pageSize:5,
-        pageSizes:[5,10],
+        pageSizes:[5,10,15,20],
         totalCount:0,
         currentPage:1,
         productId:'',
@@ -122,9 +126,6 @@
       }
     },
     methods:{
-      // formatSex: function (row, column) {
-      //   return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '未知';
-      // },
       getProductList(method,params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}){
         this.$http({
             url:get_news_list,
@@ -183,16 +184,22 @@
       handleEdit(data,index) {
         this.selectTable = data
         this.dialogFormVisible = true
+        this.isHot=data.isHot
+        this.isCommend=data.isCommend==1?true:false
+        this.isOutlink=data.isOutlink
       },
       //isCommend
       handleChange(state){
-        this.isCommend=state?1:0
+        this.isCommend=state
+        console.log(this.isCommend)
       },
       handleChange1(state){
-        this.isOutlink=state?1:0
+        this.isOutlink=state
+        console.log(this.isOutlink)
       },
       handleChange2(state){
-        this.isHot=state?1:0
+        this.isHot=state
+        console.log(this.isHot)
       },
       //删除news
       handleDelete(data,index) {
@@ -254,5 +261,4 @@
   }
 </script>
 <style scoped>
-
 </style>

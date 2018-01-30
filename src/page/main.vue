@@ -33,7 +33,7 @@
            }
        },
       created(){
-           this.userName=sessionStorage.getItem("info")
+           this.userName=localStorage.getItem("info")
       }
     }
 </script>

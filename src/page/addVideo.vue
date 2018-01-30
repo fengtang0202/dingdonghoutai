@@ -14,13 +14,13 @@
       <el-input v-model="ruleForm.title" style="width:217px;"></el-input>
     </el-form-item>
     <el-form-item label="视频描述"  prop="description">
-      <el-input v-model="ruleForm.description" style="width:217px;"></el-input>
+      <el-input type="textarea"  autosize v-model="ruleForm.description" style="width:400px;"></el-input>
     </el-form-item>
     <el-form-item label="视频链接"  prop="linkUrl">
       <el-input v-model="ruleForm.linkUrl" style="width:217px;"></el-input>
     </el-form-item>
     <el-form-item label="分享代码"  prop="shareCode">
-      <el-input type="textarea"  :autosize="{ minRows: 4, maxRows:16}" v-model="ruleForm.shareCode" style="width:400px;"></el-input>
+      <el-input type="textarea"  autosize v-model="ruleForm.shareCode" style="width:400px;"></el-input>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>
@@ -41,14 +41,8 @@
           shareCode:'',
         },
         options: [{
-          value: 1,
-          label: '娱乐'
-        }, {
           value: 2,
-          label: '体育'
-        }, {
-          value: 3,
-          label: '影视'
+          label: '评测'
         }],
         value: '',
         rules: {
