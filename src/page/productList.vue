@@ -1,11 +1,12 @@
 <template>
   <el-container >
     <el-container style="text-align:center">
-      <el-table :data="tableData"  height="100%"  header-align="center" border   size="medium" style="margin:40px auto;width:60%;">
+      <el-table :data="tableData" :default-sort = "{prop: 'id', order: 'descending'}"
+       height="100%"  header-align="center" border   size="medium" style="margin:40px auto;width:60%;">
       <el-table-column  header-align="center" type="selection"></el-table-column>
-      <el-table-column  header-align="center" prop="id" label="产品ID" width="70">
+      <el-table-column  header-align="center" sortable prop="id" label="产品ID" width="70">
       </el-table-column>
-      <el-table-column header-align="center" prop="name" label="产品名称" width="120">
+      <el-table-column  header-align="center" prop="name" label="产品名称" width="120">
          <template slot-scope="scope">
            <a :href="url+scope.row.id">{{scope.row.name}}</a>
          </template>
@@ -20,7 +21,7 @@
     </el-table-column>
     <el-table-column header-align="center" label="是否推荐" width="80">
       <template slot-scope="scope">
-         <el-checkbox    v-model="scope.row.isCommend==1?true:false"></el-checkbox>
+         <el-checkbox v-model="scope.row.isCommend==1?true:false"></el-checkbox>
       </template>
     </el-table-column>
     <el-table-column header-align="center" label="操作" >
@@ -60,10 +61,11 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item :label-width="formLabelWidth" label="品牌名称" prop="brandId">
-          <el-select v-model="selectTable.brandId" placeholder="请选择活动区域">
+        <el-form-item :label-width="formLabelWidth"  label="品牌名称" prop="brandId">
+          <el-select v-model="selectTable.brandId" >
             <el-option v-for="(value,key) in brandList" :key='key' :label="value" :value="key"></el-option>
           </el-select>
+          <span>当前:{{brandId}}</span>
         </el-form-item>
         <el-form-item label="产品图片" :label-width="formLabelWidth">
           <el-upload
@@ -72,7 +74,7 @@
             :on-success="handleSuccess"
             :on-remove="handleRemove"
             list-type="picture-card"
-            :file-list="this.imgUrlObj" style="width:80%;">
+            :file-list="this.imgUrlObj">
             <el-button size="small" type="primary">点击上传</el-button>
           </el-upload>
         </el-form-item>
@@ -114,6 +116,7 @@
         del_img:del_img,
         imgUrlObj:[],
         isCommend:false,
+        brandId:null,
         options: [
           {
             value: 6,
@@ -197,9 +200,10 @@
       handleEdit(data,index) {
         this.selectTable = data
         this.dialogFormVisible = true
+        this.brandId=this.selectTable.brandId
+        this.brandId=this.brandList[this.brandId]
         this.imgUrlObj=this.tableData[index].imgUrlObj
         this.isCommend=data.isCommend==1?true:false
-        console.log(this.isCommend)
       },
       //isCommend
       handleChange(state){
@@ -250,20 +254,10 @@
       handleRemove(file,fileList) {
         this.imgUrlObj=fileList
       },
-      handleSuccess(file,fileList) {
-        // this.imgUrl=file.uploadedImageUrl
-        // this.imgUrlObj[file.uploadedImageUrl]=file.uploadedImageUrl
-        // console.log(this.imgUrlObj)
-        // console.log(fileList)
-        // console.log(this.imgUrlObj)
+      handleSuccess(file) {
         this.imgUrlObj.push(file)
         }
     }
   }
 </script>
-<style scoped>
-  el-table::-webkit-scrollbar {
-    width:0px;
-    height:0px;
-  }
-</style>
+
