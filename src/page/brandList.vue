@@ -1,11 +1,16 @@
 <template>
   <el-container >
     <el-container style="text-align:center;">
-      <el-table :data="tableData" header-align="center" border max-height=""  size="medium " style="width:50%;margin:20px auto">
+      <el-table :data="tableData"  header-align="center" border  height="400px;"  size="medium " style="width:50%;margin:20px auto">
         <el-table-column  header-align="center" type="selection"></el-table-column>
         <el-table-column  header-align="center" prop="id" label="ID" width="70">
         </el-table-column>
         <el-table-column  header-align="center" prop="name" label="品牌名称" width="150">
+        </el-table-column>
+        <el-table-column header-align="center" label="品牌logo" width="150">
+          <template  slot-scope="scope">
+            <img :src="scope.row.imglogoUrl" alt="" style="width:80px;height:60px;">
+          </template>
         </el-table-column>
         <el-table-column header-align="center" label="操作">
           <template  slot-scope="scope">
@@ -41,7 +46,7 @@
             :on-success="handleSuccess"
             :on-remove="handleRemove"
             :limit="limit"
-            :file-list="[{name:'',url:selectTable.imglogoUrl}]"
+            :file-list="[{url:selectTable.imglogoUrl}]"
             list-type="picture-card" style="width:80%;">
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>

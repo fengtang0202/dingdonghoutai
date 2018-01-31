@@ -1,23 +1,27 @@
 <template>
   <el-container >
     <el-container style="text-align:center">
-      <el-table :data="tableData"  header-align="center" border   size="medium" style="margin:40px auto;width:45%">
+      <el-table :data="tableData"  height="100%"  header-align="center" border   size="medium" style="margin:40px auto;width:60%;">
       <el-table-column  header-align="center" type="selection"></el-table-column>
       <el-table-column  header-align="center" prop="id" label="产品ID" width="70">
       </el-table-column>
       <el-table-column header-align="center" prop="name" label="产品名称" width="120">
+         <template slot-scope="scope">
+           <a :href="url+scope.row.id">{{scope.row.name}}</a>
+         </template>
       </el-table-column>
       <el-table-column  header-align="center" prop="price" label="产品价格" width="100">
       </el-table-column>
-    <!--<el-table-column header-align="center" label="产品图" width="120">-->
-      <!--<template  slot-scope="scope">-->
-        <!--<img :src="scope.row.imgUrl" alt="" style="width:80px;height:60px;">-->
-      <!--</template>-->
-    <!--</el-table-column>-->
+        <!--图片-->
+    <el-table-column header-align="center" label="产品图" width="300">
+      <template  slot-scope="scope">
+        <img v-for="item in scope.row.imgUrlObj" :src="item.url" alt="" style="width:80px;height:60px;">
+      </template>
+    </el-table-column>
     <el-table-column header-align="center" label="是否推荐" width="80">
-       <template  slot-scope="scope">
-         <el-checkbox  v-model="scope.row.isCommend==1?true:false"></el-checkbox>
-       </template>
+      <template slot-scope="scope">
+         <el-checkbox    v-model="scope.row.isCommend==1?true:false"></el-checkbox>
+      </template>
     </el-table-column>
     <el-table-column header-align="center" label="操作" >
       <template  slot-scope="scope">
@@ -46,6 +50,21 @@
         <el-form-item label="产品名称" :label-width="formLabelWidth">
           <el-input v-model="selectTable.name"  style="width:80%;" auto-complete="off"></el-input>
         </el-form-item>
+        <el-form-item label="产品类型" :label-width="formLabelWidth">
+          <el-select v-model="selectTable.classId"  placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label-width="formLabelWidth" label="品牌名称" prop="brandId">
+          <el-select v-model="selectTable.brandId" placeholder="请选择活动区域">
+            <el-option v-for="(value,key) in brandList" :key='key' :label="value" :value="key"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="产品图片" :label-width="formLabelWidth">
           <el-upload
             class="upload-demo"
@@ -59,7 +78,7 @@
         </el-form-item>
         <el-form-item label="产品价格" :label-width="formLabelWidth">
             <el-input v-model="selectTable.price"  style="width:100px;"></el-input>
-            <el-checkbox  label="是否推荐" @change="handleChange" :checked="selectTable.isCommend==1?true:false" ></el-checkbox>
+            <el-checkbox  label="是否推荐" @change="handleChange" :checked="this.isCommend" ></el-checkbox>
         </el-form-item>
         <el-form-item>
           <quill-editor v-model="selectTable.content">
@@ -75,7 +94,7 @@
 </template>
 
 <script>
-  import {get_product_list,del_product,update_product,upload_img,del_img} from '../api/url'
+  import {get_product_list,del_product,update_product,upload_img,del_img,all_brand} from '../api/url'
   var qs = require('qs');
   export default {
     data() {
@@ -94,11 +113,30 @@
         upload_img:upload_img,
         del_img:del_img,
         imgUrlObj:[],
-        isCommend:false
+        isCommend:false,
+        options: [
+          {
+            value: 6,
+            label: '微型车'
+          }, {
+            value: 7,
+            label: '乘用车'
+          }, {
+            value: 8,
+            label: '商务车'
+          }
+        ],
+        brandList:null,
+        url:"/m/proDetails?id="
       }
     },
     created(){
       this.getProductList()
+      this.$http({
+        url: all_brand
+      }).then(data=>{
+        this.brandList=data.data.brandMap
+      })
     },
     methods:{
       getProductList(params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}){
@@ -112,6 +150,7 @@
         ).then(data=>{
           this.tableData=data.data.resultList
           this.totalCount=data.data.totalCount
+          // console.table(this.tableData)
         })
       },
       //close dialog
@@ -159,10 +198,12 @@
         this.selectTable = data
         this.dialogFormVisible = true
         this.imgUrlObj=this.tableData[index].imgUrlObj
+        this.isCommend=data.isCommend==1?true:false
+        console.log(this.isCommend)
       },
       //isCommend
       handleChange(state){
-         this.isCommend=state?1:0
+        this.isCommend=state
       },
       handleDelete(data,index) {
         this.$confirm('删除该记录, 是否继续?', '提示', {
@@ -216,9 +257,13 @@
         // console.log(fileList)
         // console.log(this.imgUrlObj)
         this.imgUrlObj.push(file)
-      }
+        }
     }
   }
 </script>
-<style>
+<style scoped>
+  el-table::-webkit-scrollbar {
+    width:0px;
+    height:0px;
+  }
 </style>

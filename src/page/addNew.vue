@@ -1,6 +1,6 @@
 <template>
   <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-    <el-form-item label="导航" prop="classId">
+    <el-form-item label="资讯类型" prop="classId">
       <el-select v-model="ruleForm.classId" placeholder="请选择">
         <el-option
           v-for="item in nav"
@@ -32,8 +32,8 @@
       <!--</el-form-item>-->
     <el-form-item>
       <el-checkbox label="是否推荐"  v-model="ruleForm.isCommend" ></el-checkbox>
-      <el-checkbox label="是否外部链接" v-model="ruleForm.isOutlink" ></el-checkbox>
       <el-checkbox label="是否热点" v-model="ruleForm.isHot"></el-checkbox>
+      <el-checkbox label="是否外部链接" v-model="ruleForm.isOutlink" ></el-checkbox>
     </el-form-item>
     <el-form-item label="外部链接" v-if="ruleForm.isOutlink" style="width:400px;">
           <el-input v-model="ruleForm.outlinkUrl"></el-input>

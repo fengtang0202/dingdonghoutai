@@ -13,7 +13,7 @@
     <el-form-item label="品牌名称" prop="name">
       <el-input v-model="ruleForm.name" placeholder="请输入品牌名称" style="width:217px;"></el-input>
     </el-form-item>
-    <el-form-item label="企业logo" style="margin-bottom: 50px">
+    <el-form-item label="品牌logo" style="margin-bottom: 50px">
       <el-upload
         class="upload-demo"
         drag

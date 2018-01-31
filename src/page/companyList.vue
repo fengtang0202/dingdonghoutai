@@ -61,6 +61,9 @@
         <el-form-item label="企业网址" :label-width="formLabelWidth">
           <el-input v-model="selectTable.companyUrl"  style="width:300px;"></el-input>
         </el-form-item>
+        <el-form-item label="企业描述" :label-width="formLabelWidth">
+          <el-input v-model="selectTable.description"  type="textarea" autosize style="width:300px;"></el-input>
+        </el-form-item>
       </el-form>
       <div scope="footer" class="dialog-footer">
         <el-button @click="handleCancel">取 消</el-button>

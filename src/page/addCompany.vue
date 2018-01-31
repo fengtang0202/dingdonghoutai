@@ -3,9 +3,6 @@
     <el-form-item label="企业名称" prop="name">
       <el-input v-model="ruleForm.name" style="width:217px;"></el-input>
     </el-form-item>
-    <el-form-item label="企业描述" prop="description">
-      <el-input v-model="ruleForm.description" style="width:217px;"></el-input>
-    </el-form-item>
     <el-form-item label="企业联系人"  prop="linkMan">
       <el-input v-model="ruleForm.linkMan" style="width:217px;"></el-input>
     </el-form-item>
@@ -20,6 +17,9 @@
     </el-form-item>
     <el-form-item label="企业网址"  prop="companyUrl">
       <el-input v-model="ruleForm.companyUrl" style="width:217px;"></el-input>
+    </el-form-item>
+    <el-form-item label="企业描述" prop="description">
+      <el-input v-model="ruleForm.description" type="textarea"  autosize style="width:300px;"></el-input>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>

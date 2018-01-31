@@ -16,15 +16,17 @@
     <el-form-item label="广告链接"  prop="adLink">
       <el-input v-model="ruleForm.adLink" style="width:217px;"></el-input>
     </el-form-item>
-    <el-form-item label="广告图片">
+    <el-form-item label="广告图片" style="margin-bottom: 60px;">
       <el-upload
         class="upload-demo"
         drag
-        action="1720334v9d.iask.in/admin/upload?uploaderId=1"
-        multiple :on-preview="handlePreview">
+        :limit="limit"
+        list-type="picture-card"
+        :action="upload_img"
+        :on-success="handleSuccess"
+        :on-remove="handleRemove"
+        multiple>
         <i class="el-icon-upload"></i>
-        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-        <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
       </el-upload>
     </el-form-item>
     <el-form-item>
@@ -34,7 +36,7 @@
   </el-form>
 </template>
 <script>
-  import {add_adv} from '../api/url'
+  import {add_adv,upload_img,del_img} from '../api/url'
   export default {
     data() {
       return {
@@ -45,6 +47,8 @@
           content: '',
           adLink:'',
         },
+        upload_img:upload_img,
+        limit:1,
         options: [{
           value: 1,
           label: '首页核心大图'
@@ -100,9 +104,21 @@
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
-      handlePreview(file){
+      handleSuccess(file){
         //通过file.response 来接受服务器返回的数据
-        console.log(file.response)
+        this.ruleForm.imgUrl=file.url
+        console.log(this.ruleForm.imgUrl)
+      },
+      handleRemove(){
+        this.$http({
+          url:del_img,
+          method:'post',
+          params:{
+            imgName:this.ruleForm.imgUrl
+          }
+        }).then(data=>{
+          console.log(data)
+        })
       },
       handleChange(state){
         this.ruleForm.isCommend=state

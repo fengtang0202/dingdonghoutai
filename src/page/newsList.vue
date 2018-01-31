@@ -7,9 +7,8 @@
         <el-table-column header-align="center"  label="资讯标题" width="100">
           <template  slot-scope="scope">
             <a class="outLinkUrl"  :href="scope.row.outlinkUrl" v-if="scope.row.isOutlink==1?true:false">{{scope.row.title}}</a>
-            <span v-else>{{scope.row.title}}</span>
+            <a v-else style="color:red;" :href="url+scope.row.id">{{scope.row.title}}</a>
           </template>
-          
         </el-table-column>
         <el-table-column prop="author" label="作者" header-align="center" width="100">
         </el-table-column>
@@ -54,6 +53,16 @@
     <!--编辑-->
     <el-dialog :model="selectTable" :visible.sync="dialogFormVisible"  :before-close="handleClose">
       <el-form>
+        <el-form-item :label-width="formLabelWidth" label="资讯类型" prop="classId">
+          <el-select v-model="selectTable.classId" placeholder="请选择">
+            <el-option
+              v-for="item in nav"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="资讯标题" :label-width="formLabelWidth">
           <el-input v-model="selectTable.title"  style="width:80%;" auto-complete="off"></el-input>
         </el-form-item>
@@ -72,9 +81,13 @@
         <el-form-item  label='点击量' :label-width="formLabelWidth">
           <!--<el-input v-model="" label="点击量" style="width:80px;"></el-input>-->
           <el-input-number v-model="selectTable.clickNum"></el-input-number>
-          <el-checkbox  label="外部链接"  border  @change="handleChange1" :checked="this.isOutlink" ></el-checkbox>
+
           <el-checkbox  label="推荐"  border  @change="handleChange" :checked="this.isCommend" ></el-checkbox>
           <el-checkbox  label="热点"  border @change="handleChange2" :checked="this.isHot" ></el-checkbox>
+          <el-checkbox  label="外部链接"  border  @change="handleChange1" :checked="this.isOutlink" ></el-checkbox>
+          <el-input v-if="this.isOutlink" style="width:300px;" v-model="selectTable.outlinkUrl">
+            <template slot="prepend">外部链接</template>
+          </el-input>
         </el-form-item>
         <el-form-item label="资讯描述" :label-width="formLabelWidth">
           <el-input v-model="selectTable.description" style="width:80%;" type="textarea" :rows="4"></el-input>
@@ -113,7 +126,29 @@
         imgUrl:{},
         isCommend:false,
         isOutlink:false,
-        isHot:false
+        isHot:false,
+        nav:[
+          {
+            value:1,
+            label:'资讯'
+          },
+          {
+            value:5,
+            label:'口碑'
+          },
+          {
+            value: 9,
+            label: '创业路'
+          }, {
+            value: 10,
+            label: '前言访谈'
+          },
+          {
+            value:11,
+            label:'经销商大调查'
+          }
+        ],
+        url:'/m/newsDetails?id='
       }
     },
     created(){
@@ -184,22 +219,19 @@
       handleEdit(data,index) {
         this.selectTable = data
         this.dialogFormVisible = true
-        this.isHot=data.isHot
+        this.isHot=data.isHot==1?true:false
         this.isCommend=data.isCommend==1?true:false
-        this.isOutlink=data.isOutlink
+        this.isOutlink=data.isOutlink==1?true:false
       },
       //isCommend
       handleChange(state){
         this.isCommend=state
-        console.log(this.isCommend)
       },
       handleChange1(state){
         this.isOutlink=state
-        console.log(this.isOutlink)
       },
       handleChange2(state){
         this.isHot=state
-        console.log(this.isHot)
       },
       //删除news
       handleDelete(data,index) {

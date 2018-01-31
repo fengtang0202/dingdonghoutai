@@ -7,6 +7,7 @@
          <div class="info">
             <span>欢迎,{{userName}}</span>
          </div>
+         <el-button type="primary"  style="background-color:#242f42;border:0;" @click="loginOut">退出</el-button>
        </el-header>
        <el-container>
          <el-aside width="200px">
@@ -34,6 +35,12 @@
        },
       created(){
            this.userName=localStorage.getItem("info")
+      },
+      methods:{
+           loginOut(){
+             localStorage.removeItem('info');
+             this.$router.push("/")
+           }
       }
     }
 </script>

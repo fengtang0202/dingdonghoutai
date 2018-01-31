@@ -1,7 +1,7 @@
 <template>
   <el-container >
     <el-container style="text-align:center;">
-      <el-table :data="tableData" header-align="center" border max-height=""  size="medium " style="width:45%;margin:20px auto">
+      <el-table :data="tableData" header-align="center" border height="100%"  size="medium " style="width:45%;margin:20px auto">
         <el-table-column  header-align="center" type="selection"></el-table-column>
         <el-table-column  header-align="center" prop="id" label="ID" width="70">
         </el-table-column>
@@ -48,14 +48,18 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="广告标题" :label-width="formLabelWidth">
+          <el-input v-model="selectTable.title"  style="width:300px;"></el-input>
+        </el-form-item>
         <el-form-item label="产品图片" :label-width="formLabelWidth">
           <el-upload
             class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-preview="handlePreview"
+            :action="upload_img"
+            :limit='limit'
+            :on-success="handleSuccess"
             :on-remove="handleRemove"
-            :file-list="[{name:'',url:selectTable.imgUrl}]"
-            list-type="picture" style="width:80%;">
+            :file-list="[{url:selectTable.imgUrl}]"
+            list-type="picture-card" style="width:80%;">
             <el-button size="small" type="primary">点击上传</el-button>
             <div  slot-scope="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
@@ -73,8 +77,7 @@
 </template>
 
 <script>
-  import {adv_list,del_adv,update_adv} from '../api/url'
-  let params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}
+  import {adv_list,del_adv,update_adv,upload_img,del_img} from '../api/url'
   export default {
     data() {
       return {
@@ -88,6 +91,9 @@
         dialogTableVisible: false,
         dialogFormVisible: false,
         formLabelWidth: '100px',
+        limit:1,
+        imgUrl:'',
+        upload_img:upload_img,
         options: [{
           value: 1,
           label: '首页核心大图'
@@ -101,22 +107,20 @@
       }
     },
     created(){
-      this.getProductList(params,'post')
+      this.getProductList()
     },
     methods:{
-      getProductList(params=null,method){
+      getProductList(method,params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}){
         this.$http({
             url:adv_list,
-            method:method ,
+            method:"post" ,
             params:{
               ...params
             }
           }
         ).then(data=>{
           this.tableData=data.data.resultList
-          console.log(data.data)
           this.totalCount=data.data.totalCount
-          console.log(this.totalCount)
         })
       },
       //close dialog
@@ -130,6 +134,7 @@
       //修改产品
       handleUpdate(data){
         this.dialogFormVisible = false
+        // this.data.imgUrl=this.imgUrl
         this.$http({
           method:'post',
           url:update_adv,
@@ -155,10 +160,6 @@
         this.selectTable = data
         this.dialogFormVisible = true
       },
-      //isCommend
-      handleChange(a){
-        a=this.$refs.isCommend.checked
-      },
       handleDelete(data,index) {
         this.$confirm('删除该记录, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -176,6 +177,7 @@
                 message: '删除成功!'
               });
               this.totalCount--
+              this.getProductList()
             }
           })
         }).catch(() => {
@@ -187,23 +189,33 @@
       },
       handleCancel(){
         this.dialogFormVisible = false
-        this.getProductList(params,'post')
+        this.getProductList()
       },
       handleSizeChange(val) {
         this.pageSize=val
         let params={currentPage:this.currentPage,pageSize:this.pageSize,isDel:0}
-        this.getProductList(params,'post')
+        this.getProductList(params)
       },
       handleCurrentChange(val) {
         this.currentPage=val
         let params={currentPage:val,pageSize:this.pageSize,isDel:0}
-        this.getProductList(params,'post')
+        this.getProductList(params)
       },
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
+      handleSuccess(file){
+        //通过file.response 来接受服务器返回的数据
+        this.imgUrl=file.url
+        console.log(this.imgUrl)
       },
-      handlePreview(file) {
-        console.log(file);
+      handleRemove(){
+        this.$http({
+          url:del_img,
+          method:'post',
+          params:{
+            imgName:this.imgUrl
+          }
+        }).then(data=>{
+          console.log(data)
+        })
       }
     }
   }

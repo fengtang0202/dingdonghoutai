@@ -4,11 +4,17 @@
       <el-table :data="tableData" header-align="center" border max-height=""  size="medium " style="width:60%;margin:20px auto">
         <el-table-column  header-align="center" type="selection"></el-table-column>
         <el-table-column label="ID" prop="id" header-align="center" width="80"></el-table-column>
-        <el-table-column header-align="center" prop="title" label="视频标题" width="120">
+        <el-table-column header-align="center" label="视频标题" width="120">
+             <template slot-scope="scope">
+               <a :href="url+scope.row.id">{{scope.row.title}}</a>
+             </template>
         </el-table-column>
         <el-table-column  header-align="center" prop="linkUrl" label="视频链接" width="150">
         </el-table-column>
-        <el-table-column header-align="center" prop="addTime" label="添加时间" width="150">
+        <el-table-column  label="添加的时间" header-align="center" width="100">
+          <template slot-scope="scope">
+            <span>{{scope.row.addTime|formatDate}}</span>
+          </template>
         </el-table-column>
         <el-table-column header-align="center" prop="clickNum" label="点击量" width="100">
         </el-table-column>
@@ -69,6 +75,7 @@
 
 <script>
   import {video_list,del_video,update_video} from '../api/url'
+  import {formatDate} from '../api/filters'
   export default {
     data() {
       return {
@@ -82,6 +89,7 @@
         dialogTableVisible: false,
         dialogFormVisible: false,
         formLabelWidth: '100px',
+        url:'/m/videoDetails?id=',
         options: [{
           value: 2,
           label: '评测'
@@ -91,6 +99,12 @@
     created(){
       this.getProductList('post')
     },
+  filters:{
+    formatDate(time){
+      var data = new Date(time);
+      return formatDate(data,'yyyy-MM-dd');
+    }
+  },
     methods:{
       getProductList(method,params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}){
         this.$http({
@@ -117,6 +131,7 @@
       //修改产品
       handleUpdate(data){
         this.dialogFormVisible = false
+        delete data.addTime
         this.$http({
           method:'post',
           url:update_video,
@@ -124,7 +139,17 @@
             ...data
           }
         }).then(data=>{
-          console.log(data)
+          if(data.data.status==1000){
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            });
+          }else{
+            this.$message({
+              message:'修改失败',
+              type:'error'
+            })
+          }
         })
       },
       //编辑button
