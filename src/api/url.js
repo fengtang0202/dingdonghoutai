@@ -1,5 +1,5 @@
 //admin 用户管理
-const api="http://47.104.150.166:8090/admin/"
+const api="http://47.104.150166:8090/admin/"
 const user_login=`${api}sys`
 const update_psd=`${api}manager/updatePsd`
 

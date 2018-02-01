@@ -66,18 +66,19 @@
         <el-form-item label="资讯标题" :label-width="formLabelWidth">
           <el-input v-model="selectTable.title"  style="width:80%;" auto-complete="off"></el-input>
         </el-form-item>
-        <!--<el-form-item label="资讯配图" :label-width="formLabelWidth">-->
-          <!--<el-upload-->
-            <!--class="upload-demo"-->
-            <!--:action="upload_img"-->
-            <!--:on-success="handleSuccess"-->
-            <!--:on-remove="handleRemove"-->
-            <!--:file-list="filelist"-->
-            <!--list-type="picture" style="width:80%;">-->
-            <!--<el-button size="small" type="primary">点击上传</el-button>-->
-            <!--<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
-          <!--</el-upload>-->
-        <!--</el-form-item>-->
+        <el-form-item label="资讯配图" :label-width="formLabelWidth">
+          <el-upload
+            class="upload-demo"
+            :action="upload_img"
+            :on-success="handleSuccess"
+            :on-remove="handleRemove"
+            :limit="limit"
+            :file-list="[{url:selectTable.imgUrl}]"
+            list-type="picture-card" style="width:80%;">
+            <el-button size="small" type="primary">点击上传</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+          </el-upload>
+        </el-form-item>
         <el-form-item  label='点击量' :label-width="formLabelWidth">
           <!--<el-input v-model="" label="点击量" style="width:80px;"></el-input>-->
           <el-input-number v-model="selectTable.clickNum"></el-input-number>
@@ -106,7 +107,7 @@
 </template>
 
 <script>
-  import {get_news_list,del_news,update_news,upload_img} from '../api/url'
+  import {get_news_list,del_news,update_news,upload_img,del_img} from '../api/url'
   import {formatDate} from '../api/filters'
   var qs = require('qs');
   export default {
@@ -123,10 +124,11 @@
         dialogFormVisible: false,
         formLabelWidth: '100px',
         upload_img:upload_img,
-        imgUrl:{},
+        imgUrl:'',
         isCommend:false,
         isOutlink:false,
         isHot:false,
+        limit:1,
         nav:[
           {
             value:1,
@@ -186,6 +188,7 @@
       //编辑资讯
       handleUpdate(data){
         this.dialogFormVisible = false
+        data.imgUrl=this.imgUrl
         data.isCommend=this.isCommend
         data.isCommend=data.isCommend?1:0
         data.isHot=this.isHot
@@ -277,17 +280,21 @@
         let params={currentPage:val,pageSize:this.pageSize,isDel:0}
         this.getProductList('post',params)
       },
-      handleRemove(file,fileList) {
-      // console.log(file.response)
-       delete this.imgUrl[file.response.uploadedImageUrl]
+      handleSuccess(file){
+        //通过file.response 来接受服务器返回的数据
+        this.imgUrl=file.url
         console.log(this.imgUrl)
       },
-      handleSuccess(file) {
-        this.imgUrl[file.uploadedImageUrl]=file.uploadedImageUrl
-        for(item of this.imgUrl){
-             this.filelist["url"]=item
-        }
-        console.log(this.imgUrl)
+      handleRemove(){
+        this.$http({
+          url:del_img,
+          method:'post',
+          params:{
+            imgName:this.imgUrl
+          }
+        }).then(data=>{
+          console.log(data)
+        })
       }
     }
   }

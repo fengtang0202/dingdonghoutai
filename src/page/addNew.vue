@@ -19,17 +19,18 @@
     <el-form-item label="资讯描述"  prop="description">
       <el-input type="textarea"  autosize v-model="ruleForm.description" style="width:400px;"></el-input>
     </el-form-item>
-      <!--<el-form-item label="资讯图片" style="margin-bottom: 60px;width:40%;">-->
-        <!--<el-upload-->
-          <!--class="upload-demo"-->
-          <!--drag-->
-          <!--list-type="picture-card"-->
-          <!--:action="upload_img"-->
-          <!--multiple :on-success="handleSuccess"-->
-          <!--:on-remove="handleRemove">-->
-          <!--<i class="el-icon-upload"></i>-->
-        <!--</el-upload>-->
-      <!--</el-form-item>-->
+      <el-form-item label="资讯图片" style="margin-bottom: 60px;width:40%;">
+        <el-upload
+          class="upload-demo"
+          drag
+          list-type="picture-card"
+          :action="upload_img"
+          :limit="limit"
+          multiple :on-success="handleSuccess"
+          :on-remove="handleRemove">
+          <i class="el-icon-upload"></i>
+        </el-upload>
+      </el-form-item>
     <el-form-item>
       <el-checkbox label="是否推荐"  v-model="ruleForm.isCommend" ></el-checkbox>
       <el-checkbox label="是否热点" v-model="ruleForm.isHot"></el-checkbox>
@@ -72,6 +73,7 @@
         deleteImg:'',
         del_img:del_img,
         imgs:[],
+        limit:1,
         upload_img:upload_img,
         nav:[
           {
@@ -136,7 +138,7 @@
                 author:this.ruleForm.author,
                 description:this.ruleForm.description,
                 content:this.ruleForm.content,
-                // imgUrl:JSON.stringify(this.imgs),
+                imgUrl:this.ruleForm.imgUrl,
                 isOutlink:this.ruleForm.isOutlink?1:0,
                 outlinkUrl:this.ruleForm.outlinkUrl,
                 isHot:this.ruleForm.isHot?1:0,
@@ -165,21 +167,16 @@
         console.log(formName)
       },
       handleSuccess(file){
-        this.imgs.push(file)
-      },
-      handleRemove(file,fileList){
-        //获取图片的地址
         //通过file.response 来接受服务器返回的数据
-        this.deleteImg=file.response.url
-        this.imgs=[]
-        fileList.forEach(value=>{
-          this.imgs.push(value.response)
-        })
+        this.ruleForm.imgUrl=file.url
+        console.log(this.ruleForm.imgUrl)
+      },
+      handleRemove(){
         this.$http({
           url:del_img,
           method:'post',
           params:{
-            imgName:this.deleteImg
+            imgName:this.ruleForm.imgUrl
           }
         }).then(data=>{
           console.log(data)
