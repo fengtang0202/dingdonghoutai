@@ -2,7 +2,7 @@
   <el-container >
     <el-container style="text-align:center">
       <el-table :data="tableData" :default-sort = "{prop: 'id', order: 'descending'}"
-       height="100%"  header-align="center" border   size="medium" style="margin:40px auto;width:60%;">
+       height="100%"  header-align="center" border   size="medium" style="margin:40px auto;width:80%;">
       <el-table-column  header-align="center" type="selection"></el-table-column>
       <el-table-column  header-align="center" sortable prop="id" label="产品ID" width="70">
       </el-table-column>
@@ -31,7 +31,6 @@
       </template>
     </el-table-column>
   </el-table>
-
       <el-footer>
         <el-pagination
           @size-change="handleSizeChange"
@@ -44,7 +43,6 @@
         </el-pagination>
       </el-footer>
     </el-container>
-
     <!--编辑-->
     <el-dialog :model="selectTable" :visible.sync="dialogFormVisible"  :before-close="handleClose">
       <el-form>
@@ -103,8 +101,8 @@
       return {
         tableData:[],
         selectTable:{},
-        pageSize:5,
-        pageSizes:[5,10,15,20],
+        pageSize:10,
+        pageSizes:[10],
         totalCount:0,
         currentPage:1,
         productId:'',
@@ -260,4 +258,3 @@
     }
   }
 </script>
-

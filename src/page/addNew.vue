@@ -16,9 +16,7 @@
     <el-form-item label="资讯标题"  prop="title">
       <el-input v-model="ruleForm.title" style="width:400px;"></el-input>
     </el-form-item>
-    <el-form-item label="资讯描述"  prop="description">
-      <el-input type="textarea"  autosize v-model="ruleForm.description" style="width:400px;"></el-input>
-    </el-form-item>
+
       <el-form-item label="资讯图片" style="margin-bottom: 60px;width:40%;">
         <el-upload
           class="upload-demo"
@@ -38,6 +36,9 @@
     </el-form-item>
     <el-form-item label="外部链接" v-if="ruleForm.isOutlink" style="width:400px;">
           <el-input v-model="ruleForm.outlinkUrl"></el-input>
+    </el-form-item>
+    <el-form-item label="资讯描述"  prop="description">
+      <el-input type="textarea"  autosize v-model="ruleForm.description" style="width:600px;"></el-input>
     </el-form-item>
     <el-form-item style="position: absolute;top:78px;right:10%;">
       <quill-editor v-model="ruleForm.content" ref="myQuillEditor">

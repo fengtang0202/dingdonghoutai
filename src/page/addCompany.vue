@@ -19,7 +19,7 @@
       <el-input v-model="ruleForm.companyUrl" style="width:217px;"></el-input>
     </el-form-item>
     <el-form-item label="企业描述" prop="description">
-      <el-input v-model="ruleForm.description" type="textarea"  autosize style="width:300px;"></el-input>
+      <el-input v-model="ruleForm.description" type="textarea"  autosize style="width:600px;"></el-input>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>

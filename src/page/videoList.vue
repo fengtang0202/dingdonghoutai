@@ -1,20 +1,25 @@
 <template>
   <el-container >
     <el-container style="text-align:center;">
-      <el-table :data="tableData" header-align="center" border max-height=""  size="medium " style="width:60%;margin:20px auto">
+      <el-table :data="tableData" header-align="center" border max-height=""  size="medium " style="width:80%;margin:20px auto">
         <el-table-column  header-align="center" type="selection"></el-table-column>
         <el-table-column label="ID" prop="id" header-align="center" width="80"></el-table-column>
-        <el-table-column header-align="center" label="视频标题" width="120">
+        <el-table-column header-align="center" label="视频标题" >
              <template slot-scope="scope">
                <a :href="url+scope.row.id">{{scope.row.title}}</a>
              </template>
         </el-table-column>
-        <el-table-column  header-align="center" prop="linkUrl" label="视频链接" width="150">
+        <el-table-column  header-align="center" prop="linkUrl" label="视频链接" >
         </el-table-column>
         <el-table-column  label="添加的时间" header-align="center" width="100">
           <template slot-scope="scope">
             <span>{{scope.row.addTime|formatDate}}</span>
           </template>
+        </el-table-column>
+        <el-table-column label="视频图片">
+            <template slot-scope="scope">
+              <img :src="scope.row.imgUrl" style="width:80px;height:60px;" alt="">
+            </template>
         </el-table-column>
         <el-table-column header-align="center" prop="clickNum" label="点击量" width="100">
         </el-table-column>
@@ -58,6 +63,19 @@
         <el-form-item label="视频链接" :label-width="formLabelWidth">
           <el-input v-model="selectTable.linkUrl"  style="width:300px;"></el-input>
         </el-form-item>
+        <el-form-item label="视频图片" :label-width="formLabelWidth">
+          <el-upload
+            class="upload-demo"
+            :action="upload_img"
+            :on-success="handleSuccess"
+            :on-remove="handleRemove"
+            :limit="limit"
+            :file-list="[{url:selectTable.imgUrl}]"
+            list-type="picture-card" style="width:80%;">
+            <el-button size="small" type="primary">点击上传</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+          </el-upload>
+        </el-form-item>
         <el-form-item label="分享代码" :label-width="formLabelWidth">
           <el-input v-model="selectTable.shareCode"  style="width:300px;"></el-input>
         </el-form-item>
@@ -74,21 +92,25 @@
 </template>
 
 <script>
-  import {video_list,del_video,update_video} from '../api/url'
+  import {video_list,del_video,update_video,upload_img,del_img} from '../api/url'
   import {formatDate} from '../api/filters'
   export default {
     data() {
       return {
         tableData:[],
         selectTable:[],
-        pageSize:5,
-        pageSizes:[5,10,15,20],
+        pageSize:10,
+        pageSizes:[10],
         totalCount:0,
         currentPage:1,
         productId:'',
         dialogTableVisible: false,
         dialogFormVisible: false,
         formLabelWidth: '100px',
+        imgUrlObj:'',
+        del_img:del_img,
+        upload_img:upload_img,
+        limit:1,
         url:'/m/videoDetails?id=',
         options: [{
           value: 2,
@@ -97,7 +119,7 @@
       }
     },
     created(){
-      this.getProductList('post')
+      this.getProductList()
     },
   filters:{
     formatDate(time){
@@ -106,10 +128,10 @@
     }
   },
     methods:{
-      getProductList(method,params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}){
+      getProductList(params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}){
         this.$http({
             url:video_list,
-            method:method ,
+            method:'post' ,
             params:{
               ...params
             }
@@ -126,11 +148,12 @@
             done()
           })
           .catch(_ => {});
-        this.getProductList('post')
+        this.getProductList()
       },
       //修改产品
       handleUpdate(data){
         this.dialogFormVisible = false
+        data.imgUrl=this.imgUrlObj
         delete data.addTime
         this.$http({
           method:'post',
@@ -150,12 +173,15 @@
               type:'error'
             })
           }
+        }).then(()=>{
+          this.getProductList()
         })
       },
       //编辑button
       handleEdit(data,index) {
         this.selectTable = data
         this.dialogFormVisible = true
+        this.imgUrlObj=data.imgUrl
       },
       //isCommend
       handleChange(a){
@@ -163,7 +189,7 @@
       },
       handleCancel(){
         this.dialogFormVisible = false
-        this.getProductList('post')
+        this.getProductList()
       },
       handleDelete(data,index) {
         this.$confirm('删除该记录, 是否继续?', '提示', {
@@ -194,18 +220,28 @@
       handleSizeChange(val) {
         this.pageSize=val
         let params={currentPage:this.currentPage,pageSize:this.pageSize,isDel:0}
-        this.getProductList('post',params)
+        this.getProductList(params)
       },
       handleCurrentChange(val) {
         this.currentPage=val
         let params={currentPage:val,pageSize:this.pageSize,isDel:0}
-        this.getProductList('post',params)
+        this.getProductList(params)
       },
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
+      handleSuccess(file){
+        //通过file.response 来接受服务器返回的数据
+        this.imgUrlObj=file.url
+        console.log(this.imgUrlObj)
       },
-      handlePreview(file) {
-        console.log(file);
+      handleRemove(){
+        this.$http({
+          url:del_img,
+          method:'post',
+          params:{
+            imgName:this.imgUrlObj
+          }
+        }).then(data=>{
+          console.log(data)
+        })
       }
     }
   }

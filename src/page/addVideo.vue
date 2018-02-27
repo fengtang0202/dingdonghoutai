@@ -13,14 +13,27 @@
     <el-form-item label="视频标题" prop="title">
       <el-input v-model="ruleForm.title" style="width:217px;"></el-input>
     </el-form-item>
-    <el-form-item label="视频描述"  prop="description">
-      <el-input type="textarea"  autosize v-model="ruleForm.description" style="width:400px;"></el-input>
+
+    <el-form-item label="视频图片" style="margin-bottom: 50px">
+      <el-upload
+        class="upload-demo"
+        drag
+        :action="upload_img"
+        list-type="picture-card"
+        :limit="limit"
+         multiple :on-success="handleSuccess"
+        :on-remove="handleRemove">
+        <i class="el-icon-upload"></i>
+      </el-upload>
     </el-form-item>
     <el-form-item label="视频链接"  prop="linkUrl">
       <el-input v-model="ruleForm.linkUrl" style="width:217px;"></el-input>
     </el-form-item>
     <el-form-item label="分享代码"  prop="shareCode">
-      <el-input type="textarea"  autosize v-model="ruleForm.shareCode" style="width:400px;"></el-input>
+      <el-input type="textarea"  autosize v-model="ruleForm.shareCode" style="width:500px;"></el-input>
+    </el-form-item>
+    <el-form-item label="视频描述"  prop="description">
+      <el-input type="textarea"  autosize v-model="ruleForm.description" style="width:500px;"></el-input>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>
@@ -29,7 +42,7 @@
   </el-form>
 </template>
 <script>
-  import {add_video} from '../api/url'
+  import {add_video,upload_img,del_img} from '../api/url'
   export default {
     data() {
       return {
@@ -37,9 +50,12 @@
           classId:'',
           title: '',
           description:'',
+          imgUrl:'',
           linkUrl: '',
           shareCode:'',
         },
+        limit:1,
+         upload_img:upload_img,
         options: [{
           value: 2,
           label: '评测'
@@ -88,9 +104,21 @@
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
-      handlePreview(file){
+      handleSuccess(file){
         //通过file.response 来接受服务器返回的数据
-        console.log(file.response)
+        this.ruleForm.imgUrl=file.url
+        console.log(this.ruleForm.imgUrl)
+      },
+      handleRemove(){
+        this.$http({
+          url:del_img,
+          method:'post',
+          params:{
+            imgName:this.ruleForm.imgUrl
+          }
+        }).then(data=>{
+          console.log(data)
+        })
       },
       handleChange(state){
         this.ruleForm.isCommend=state

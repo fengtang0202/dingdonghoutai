@@ -20,6 +20,7 @@
 
 <script>
   import{user_login} from '../api/url'
+  import {requestList} from '../api/request'
   export default {
     data(){
       return{
@@ -38,6 +39,7 @@
       }
     },
     created(){
+      // console.log(requestList)
       if(localStorage.getItem("info")){
         this.$router.push('/main')
       }

@@ -85,6 +85,9 @@
         <el-menu-item-group>
           <el-menu-item index="10-1" @click="jumpToUserList">用户列表</el-menu-item>
         </el-menu-item-group>
+        <el-menu-item-group>
+          <el-menu-item index="10-2" @click="jumpToAddUser">添加管理员</el-menu-item>
+        </el-menu-item-group>
       </el-submenu>
     </el-menu>
   </el-col>
@@ -135,6 +138,9 @@
         },
         jumpToAddBrand(){
           this.jump('/addBrand')
+        },
+        jumpToAddUser(){
+          this.jump('/addUser')
         }
       }
     }

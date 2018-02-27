@@ -1,18 +1,18 @@
 <template>
   <el-container >
     <el-container style="text-align:center;">
-      <el-table :data="tableData"  header-align="center" border  height="400px;"  size="medium " style="width:50%;margin:20px auto">
+      <el-table :data="tableData"  header-align="center" border  height="400px;"  size="medium " style="width:70%;margin:20px auto">
         <el-table-column  header-align="center" type="selection"></el-table-column>
         <el-table-column  header-align="center" prop="id" label="ID" width="70">
         </el-table-column>
-        <el-table-column  header-align="center" prop="name" label="品牌名称" width="150">
+        <el-table-column  header-align="center" prop="name" label="品牌名称" >
         </el-table-column>
-        <el-table-column header-align="center" label="品牌logo" width="150">
+        <el-table-column header-align="center" label="品牌logo" >
           <template  slot-scope="scope">
-            <img :src="scope.row.imglogoUrl" alt="" style="width:80px;height:60px;">
+            <img :src="scope.row.imglogoUrl" alt="" style="width:80px;height:80px;">
           </template>
         </el-table-column>
-        <el-table-column header-align="center" label="操作">
+        <el-table-column header-align="center" label="操作" width="200">
           <template  slot-scope="scope">
             <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button size="small" type="danger" @click="handleDelete(scope.row,scope.$index)">删除</el-button>
@@ -71,8 +71,8 @@
       return {
         tableData:[],
         selectTable:[],
-        pageSize:5,
-        pageSizes:[5,10,15,20],
+        pageSize:10,
+        pageSizes:[10],
         totalCount:0,
         currentPage:1,
         productId:'',
@@ -142,6 +142,7 @@
       handleEdit(data,index) {
         this.selectTable = data
         this.dialogFormVisible = true
+        this.imgUrlObj=data.imglogoUrl
       },
       handleDelete(data,index) {
         this.$confirm('删除该记录, 是否继续?', '提示', {

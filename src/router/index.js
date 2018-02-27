@@ -15,6 +15,7 @@ import companyList from '@/page/companyList'
 import addCompany from '@/page/addCompany'
 import brandList from '@/page/brandList'
 import addBrand from '@/page/addBrand'
+import addUser from '@/page/addUser'
 Vue.use(Router)
 export default new Router({
   routes: [
@@ -81,6 +82,13 @@ export default new Router({
         {
           path:'/addVideo',
           component:addVideo,
+          meta: {
+            requireAuth: true,
+          },
+        },
+        {
+          path:'/addUser',
+          component:addUser,
           meta: {
             requireAuth: true,
           },

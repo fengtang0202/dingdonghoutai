@@ -1,13 +1,11 @@
 <template>
   <el-container >
     <el-container style="text-align:center;">
-      <el-table :data="tableData" header-align="center" border max-height=""  size="medium " style="width:100%;margin:20px auto">
+      <el-table :data="tableData" header-align="center" border max-height="700"  size="medium " style="margin:20px auto">
         <el-table-column  header-align="center" type="selection"></el-table-column>
         <el-table-column  header-align="center" prop="id" label="ID" width="70">
         </el-table-column>
         <el-table-column  header-align="center" prop="name" label="企业名称" width="100">
-        </el-table-column>
-        <el-table-column header-align="center" prop="description" label="企业描述" width="120">
         </el-table-column>
         <el-table-column  header-align="center" prop="linkMan" label="企业联系人" width="100">
         </el-table-column>
@@ -61,8 +59,8 @@
         <el-form-item label="企业网址" :label-width="formLabelWidth">
           <el-input v-model="selectTable.companyUrl"   style="width:300px;"></el-input>
         </el-form-item>
-        <el-form-item label="企业描述" :label-width="formLabelWidth">
-          <el-input v-model="selectTable.description"  type="textarea" autosize style="width:300px;"></el-input>
+        <el-form-item label="企业描述" label-width="100" >
+          <el-input v-model="selectTable.description"  type="textarea" autosize style="width:600px;"></el-input>
         </el-form-item>
       </el-form>
       <div scope="footer" class="dialog-footer">
@@ -81,7 +79,7 @@
         tableData:[],
         selectTable:[],
         pageSize:5,
-        pageSizes:[5,10,15,20],
+        pageSizes:[10],
         totalCount:0,
         currentPage:1,
         productId:'',
@@ -101,13 +99,13 @@
       }
     },
     created(){
-      this.getProductList('post')
+      this.getProductList()
     },
     methods:{
-      getProductList(method,params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}){
+      getProductList(params={pageSize:this.pageSize,currentPage:this.currentPage,isDel:0}){
         this.$http({
             url:company_list,
-            method:method ,
+            method:"post" ,
             params:{
               ...params
             }
@@ -124,7 +122,7 @@
             done()
           })
           .catch(_ => {});
-        this.getProductList('post')
+        this.getProductList()
       },
       //修改产品
       handleUpdate(data){
@@ -150,7 +148,7 @@
       },
       handleCancel(){
         this.dialogFormVisible = false
-        this.getProductList('post')
+        this.getProductList()
       },
       handleDelete(data,index) {
         this.$confirm('删除该记录, 是否继续?', '提示', {
@@ -181,12 +179,12 @@
       handleSizeChange(val) {
         this.pageSize=val
         let params={currentPage:this.currentPage,pageSize:this.pageSize,isDel:0}
-        this.getProductList(params,'post')
+        this.getProductList(params)
       },
       handleCurrentChange(val) {
         this.currentPage=val
         let params={currentPage:val,pageSize:this.pageSize,isDel:0}
-        this.getProductList(params,'post')
+        this.getProductList(params)
       }
     }
   }

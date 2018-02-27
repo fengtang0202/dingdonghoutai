@@ -1,11 +1,12 @@
 //admin 用户管理
-const api="http://47.104.150166:8090/admin/"
+const api="http://47.104.150.166:8090/admin/"
+// const api="/admin/"
 const user_login=`${api}sys`
 const update_psd=`${api}manager/updatePsd`
-
 const add_user=`${api}manager/add`
-const del_user=`${api}manager/delete`
+const del_user=`${api}manager/delete/`
 const get_user=`${api}manager/get`
+const user_list=`${api}manager/list`
 //product 产品模块
 const get_product_list=`${api}product/list`
 const del_product=`${api}product/delete/`
@@ -55,6 +56,7 @@ module.exports={
   add_user,
   del_user,
   get_user,
+  user_list,
   get_product_list,
   del_product,
   update_product,

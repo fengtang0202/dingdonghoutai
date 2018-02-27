@@ -1,13 +1,13 @@
 <template>
   <el-container >
     <el-container style="text-align:center;">
-      <el-table :data="tableData" header-align="center" border height="100%"  size="medium " style="width:45%;margin:20px auto">
+      <el-table :data="tableData" header-align="center" border height="100%"  size="medium " style="width:80%;margin:20px auto">
         <el-table-column  header-align="center" type="selection"></el-table-column>
         <el-table-column  header-align="center" prop="id" label="ID" width="70">
         </el-table-column>
         <el-table-column  header-align="center" prop="title" label="标题" width="100">
         </el-table-column>
-        <el-table-column header-align="center" label="广告图" width="100">
+        <el-table-column header-align="center" label="广告图" >
           <template  slot-scope="scope">
             <img :src="scope.row.imgUrl" alt="" style="width:80px;height:60px;">
           </template>
@@ -83,8 +83,8 @@
       return {
         tableData:[],
         selectTable:[],
-        pageSize:5,
-        pageSizes:[5,10,15,20],
+        pageSize:10,
+        pageSizes:[10],
         totalCount:0,
         currentPage:1,
         productId:'',

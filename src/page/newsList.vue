@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-container style="text-align:center">
-      <el-table max-height="700" stripe :data="tableData"   border style="margin:20px auto;width:60%;">
+      <el-table max-height="700" stripe :data="tableData"   border style="margin:20px auto;width:80%;">
         <el-table-column  type="selection"></el-table-column>
         <el-table-column label="ID" prop="id" header-align="center" width="80"></el-table-column>
         <el-table-column header-align="center"  label="资讯标题" width="100">
@@ -16,6 +16,11 @@
             <template slot-scope="scope">
                 <span>{{scope.row.addTime|formatDate}}</span>
             </template>
+        </el-table-column>
+        <el-table-column header-align="center" label="资讯图片">
+          <template  slot-scope="scope">
+            <img :src="scope.row.imgUrl" alt="" style="width:80px;height:60px;">
+          </template>
         </el-table-column>
         <el-table-column prop="clickNum"  header-align="center"label="点击量" width="100">
         </el-table-column>
@@ -115,8 +120,8 @@
       return {
         tableData:[],
         selectTable:[],
-        pageSize:5,
-        pageSizes:[5,10,15,20],
+        pageSize:10,
+        pageSizes:[10],
         totalCount:0,
         currentPage:1,
         productId:'',
@@ -222,6 +227,7 @@
       handleEdit(data,index) {
         this.selectTable = data
         this.dialogFormVisible = true
+        this.imgUrl=data.imgUrl
         this.isHot=data.isHot==1?true:false
         this.isCommend=data.isCommend==1?true:false
         this.isOutlink=data.isOutlink==1?true:false
