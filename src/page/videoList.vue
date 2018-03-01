@@ -1,17 +1,20 @@
 <template>
   <el-container >
     <el-container style="text-align:center;">
-      <el-table :data="tableData" header-align="center" border max-height=""  size="medium " style="width:80%;margin:20px auto">
+      <el-table :data="tableData" header-align="center" border  size="medium " style="width:100%;margin:20px auto">
         <el-table-column  header-align="center" type="selection"></el-table-column>
         <el-table-column label="ID" prop="id" header-align="center" width="80"></el-table-column>
-        <el-table-column header-align="center" label="视频标题" >
+        <el-table-column header-align="center" width="380" label="视频标题" >
              <template slot-scope="scope">
                <a :href="url+scope.row.id">{{scope.row.title}}</a>
              </template>
         </el-table-column>
-        <el-table-column  header-align="center" prop="linkUrl" label="视频链接" >
+        <el-table-column  header-align="center"  label="视频链接" >
+          <template slot-scope="scope">
+            <a :href="scope.row.linkUrl">{{scope.row.linkUrl}}</a>
+          </template>
         </el-table-column>
-        <el-table-column  label="添加的时间" header-align="center" width="100">
+        <el-table-column  label="添加的时间" header-align="center" width="150">
           <template slot-scope="scope">
             <span>{{scope.row.addTime|formatDate}}</span>
           </template>
@@ -21,7 +24,7 @@
               <img :src="scope.row.imgUrl" style="width:80px;height:60px;" alt="">
             </template>
         </el-table-column>
-        <el-table-column header-align="center" prop="clickNum" label="点击量" width="100">
+        <el-table-column header-align="center" prop="clickNum" label="点击量" width="80">
         </el-table-column>
         <el-table-column header-align="center" label="操作">
           <template  slot-scope="scope">
@@ -246,5 +249,3 @@
     }
   }
 </script>
-<style>
-</style>

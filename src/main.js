@@ -11,10 +11,12 @@ import VueQuillEditor from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
+import VueLazyload from 'vue-lazyload'
 Vue.prototype.$http=axios
 Vue.use(VueQuillEditor)
 Vue.use(ElementUI)
 Vue.use(store)
+Vue.use(VueLazyload)
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

@@ -12,11 +12,13 @@ const get_product_list=`${api}product/list`
 const del_product=`${api}product/delete/`
 const update_product=`${api}product/update`
 const add_product=`${api}product/add`
+const get_product=`${api}product/get/`
 //资讯
 const get_news_list=`${api}info/list`
 const del_news=`${api}info/delete/`
 const add_news=`${api}info/add`
 const update_news=`${api}info/update`
+const get_news=`${api}info/get/`
 //广告
 const adv_list=`${api}ad/list`
 const del_adv=`${api}ad/delete/`
@@ -59,12 +61,14 @@ module.exports={
   user_list,
   get_product_list,
   del_product,
+  get_product,
   update_product,
   add_product,
   get_news_list,
   del_news,
   add_news,
   update_news,
+  get_news,
   adv_list,
   del_adv,
   add_adv,

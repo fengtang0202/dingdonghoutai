@@ -35,7 +35,7 @@
           <el-input v-model="selectTable.name"  style="width:300px;"></el-input >
         </el-form-item>
         <el-form-item label="密码" :label-width="formLabelWidth">
-          <el-input v-model="selectTable.password"  style="width:300px;"></el-input>
+          <el-input v-model="selectTable.password" type="password" style="width:300px;"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

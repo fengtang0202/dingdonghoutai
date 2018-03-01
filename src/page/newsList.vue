@@ -1,10 +1,10 @@
 <template>
   <el-container>
     <el-container style="text-align:center">
-      <el-table max-height="700" stripe :data="tableData"   border style="margin:20px auto;width:80%;">
+      <el-table  stripe :data="tableData"   border style="margin:20px auto;">
         <el-table-column  type="selection"></el-table-column>
         <el-table-column label="ID" prop="id" header-align="center" width="80"></el-table-column>
-        <el-table-column header-align="center"  label="资讯标题" width="100">
+        <el-table-column header-align="center" width="380" label="资讯标题" >
           <template  slot-scope="scope">
             <a class="outLinkUrl"  :href="scope.row.outlinkUrl" v-if="scope.row.isOutlink==1?true:false">{{scope.row.title}}</a>
             <a v-else style="color:red;" :href="url+scope.row.id">{{scope.row.title}}</a>
@@ -34,7 +34,7 @@
             <el-checkbox  v-model="scope.row.isHot==1?true:false"></el-checkbox>
           </template>
         </el-table-column>
-        <el-table-column  label="操作">
+        <el-table-column  header-align="center" label="操作">
           <template  slot-scope="scope">
             <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button size="small" type="danger" @click="handleDelete(scope.row,scope.$index)">删除</el-button>
@@ -99,7 +99,7 @@
           <el-input v-model="selectTable.description" style="width:80%;" type="textarea" :rows="4"></el-input>
         </el-form-item>
         <el-form-item label="资讯内容" :label-width="formLabelWidth">
-          <quill-editor v-model="selectTable.content">
+          <quill-editor v-model="content">
           </quill-editor>
         </el-form-item>
       </el-form>
@@ -112,7 +112,7 @@
 </template>
 
 <script>
-  import {get_news_list,del_news,update_news,upload_img,del_img} from '../api/url'
+  import {get_news_list,del_news,update_news,upload_img,del_img,get_news} from '../api/url'
   import {formatDate} from '../api/filters'
   var qs = require('qs');
   export default {
@@ -133,6 +133,7 @@
         isCommend:false,
         isOutlink:false,
         isHot:false,
+        content:'',
         limit:1,
         nav:[
           {
@@ -194,6 +195,8 @@
       handleUpdate(data){
         this.dialogFormVisible = false
         data.imgUrl=this.imgUrl
+        //为了页面加载速度的提升 单独把content 拿出来
+        data.content=this.content
         data.isCommend=this.isCommend
         data.isCommend=data.isCommend?1:0
         data.isHot=this.isHot
@@ -226,6 +229,13 @@
       //编辑button
       handleEdit(data,index) {
         this.selectTable = data
+        let nid=data.id
+        //通过ajax(nid)来获取 content
+        this.$http({
+           url:`${get_news}${nid}`
+        }).then(data=>{
+          this.content=data.data.info.content
+        })
         this.dialogFormVisible = true
         this.imgUrl=data.imgUrl
         this.isHot=data.isHot==1?true:false
@@ -254,7 +264,6 @@
           this.$http({
             url:del_news+pid
           }).then(data=>{
-            console.log(data.data)
             if(data.data.status==1000){
               this.$message({
                 type: 'success',

@@ -2,29 +2,30 @@
   <el-container >
     <el-container style="text-align:center">
       <el-table :data="tableData" :default-sort = "{prop: 'id', order: 'descending'}"
-       height="100%"  header-align="center" border   size="medium" style="margin:40px auto;width:80%;">
+       height="100%"  header-align="center" border   size="medium" style="margin:40px auto;width:85%;">
       <el-table-column  header-align="center" type="selection"></el-table-column>
       <el-table-column  header-align="center" sortable prop="id" label="产品ID" width="70">
       </el-table-column>
-      <el-table-column  header-align="center" prop="name" label="产品名称" width="120">
+      <el-table-column  header-align="center" prop="name" label="产品名称" width="200">
          <template slot-scope="scope">
            <a :href="url+scope.row.id">{{scope.row.name}}</a>
          </template>
       </el-table-column>
-      <el-table-column  header-align="center" prop="price" label="产品价格" width="100">
+      <el-table-column  header-align="center" prop="price" label="产品价格" width="150">
       </el-table-column>
         <!--图片-->
-    <el-table-column header-align="center" label="产品图" width="300">
+    <el-table-column header-align="center" label="产品图">
       <template  slot-scope="scope">
-        <img v-for="item in scope.row.imgUrlObj" :src="item.url" alt="" style="width:80px;height:60px;">
+        <img v-for="item in scope.row.imgUrlObj"  :src="item.url" alt="" style="width:80px;height:60px;">
+        <!--<img v-for="item in scope.row.imgUrlObj" src="" v-lazy="item.url" alt="" style="width:80px;height:60px;">-->
       </template>
     </el-table-column>
-    <el-table-column header-align="center" label="是否推荐" width="80">
+    <el-table-column header-align="center" label="是否推荐" width="100">
       <template slot-scope="scope">
          <el-checkbox v-model="scope.row.isCommend==1?true:false"></el-checkbox>
       </template>
     </el-table-column>
-    <el-table-column header-align="center" label="操作" >
+    <el-table-column header-align="center" label="操作">
       <template  slot-scope="scope">
         <el-button size="small" @click="handleEdit(scope.row,scope.$index)">编辑</el-button>
         <el-button size="small" type="danger" @click="handleDelete(scope.row,scope.$index)">删除</el-button>
@@ -81,7 +82,7 @@
             <el-checkbox  label="是否推荐" @change="handleChange" :checked="this.isCommend" ></el-checkbox>
         </el-form-item>
         <el-form-item>
-          <quill-editor v-model="selectTable.content">
+          <quill-editor v-model="content">
           </quill-editor>
         </el-form-item>
       </el-form>
@@ -94,7 +95,7 @@
 </template>
 
 <script>
-  import {get_product_list,del_product,update_product,upload_img,del_img,all_brand} from '../api/url'
+  import {get_product_list,del_product,update_product,upload_img,del_img,all_brand,get_product} from '../api/url'
   var qs = require('qs');
   export default {
     data() {
@@ -115,6 +116,7 @@
         imgUrlObj:[],
         isCommend:false,
         brandId:null,
+        content:'',
         options: [
           {
             value: 6,
@@ -151,7 +153,6 @@
         ).then(data=>{
           this.tableData=data.data.resultList
           this.totalCount=data.data.totalCount
-          // console.table(this.tableData)
         })
       },
       //close dialog
@@ -168,6 +169,7 @@
         data.isCommend=this.isCommend
         data.isCommend=data.isCommend?1:0
         data.imgUrlObj=JSON.stringify(this.imgUrlObj)
+        data.content=this.content
         this.dialogFormVisible = false
         this.$http.post(
           update_product,
@@ -197,6 +199,13 @@
       //编辑button
       handleEdit(data,index) {
         this.selectTable = data
+        let pid=data.id
+        console.log(pid)
+        this.$http({
+          url:`${get_product}${pid}`
+        }).then(data=>{
+          this.content=data.data.product.content
+        })
         this.dialogFormVisible = true
         this.brandId=this.selectTable.brandId
         this.brandId=this.brandList[this.brandId]

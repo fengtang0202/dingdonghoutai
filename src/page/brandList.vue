@@ -12,7 +12,7 @@
             <img :src="scope.row.imglogoUrl" alt="" style="width:80px;height:80px;">
           </template>
         </el-table-column>
-        <el-table-column header-align="center" label="操作" width="200">
+        <el-table-column header-align="center" label="操作">
           <template  slot-scope="scope">
             <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button size="small" type="danger" @click="handleDelete(scope.row,scope.$index)">删除</el-button>

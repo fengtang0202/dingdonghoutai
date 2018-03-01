@@ -77,16 +77,16 @@
           <el-menu-item index="6-2" @click="jumpToAddBrand">品牌添加</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-submenu index="10">
+      <el-submenu index="7">
         <template slot="title">
           <i class="el-icon-location"></i>
           <span>用户管理</span>
         </template>
         <el-menu-item-group>
-          <el-menu-item index="10-1" @click="jumpToUserList">用户列表</el-menu-item>
+          <el-menu-item index="7-1" @click="jumpToUserList">用户列表</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group>
-          <el-menu-item index="10-2" @click="jumpToAddUser">添加管理员</el-menu-item>
+          <el-menu-item index="7-2" @click="jumpToAddUser">添加管理员</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
     </el-menu>
