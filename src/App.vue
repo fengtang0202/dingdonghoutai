@@ -5,7 +5,6 @@
 </template>
 
 <script>
-  <!--111-->
 export default {
   name: 'App'
 }
